@@ -1,4 +1,4 @@
-import type { Directions } from "./Direction";
+import type { DIRECTIONS } from "./Direction";
 
 export interface Portal {
   id: string;

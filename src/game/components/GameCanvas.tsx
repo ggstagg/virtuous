@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { Tile } from "../types/Tile";
 
@@ -51,44 +51,76 @@ function drawWorld(ctx: CanvasRenderingContext2D, world: WorldState) {
   const py = world.player.r * TILE_SIZE;
   ctx.fillStyle = "#4aa3ff";
   ctx.fillRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6);
+
+  ctx.fillStyle = "white";
+  ctx.font = "12px sans-serif";
+  ctx.fillText(`tick: ${world.tick}`, 6, 14);
 }
 
-export function GameCanvas({ world }: { world: WorldState }) {
+export interface GameCanvasHandle {
+  render: () => void;
+}
+
+export function GameCanvas({
+  worldRef,
+  onReady,
+}: {
+  worldRef: React.MutableRefObject<WorldState>;
+  onReady: (handle: GameCanvasHandle) => void;
+}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  const widthPx = useMemo(() => {
-    const cols = world.grid[0]?.length ?? 0;
-    return cols * TILE_SIZE;
-  }, [world.grid]);
-
-  const heightPx = useMemo(() => {
-    const rows = world.grid.length;
-    return rows * TILE_SIZE;
-  }, [world.grid]);
+  const [size, setSize] = useState<{
+    widthPx: number;
+    heightPx: number;
+  } | null>(null);
 
   useEffect(() => {
+    const world = worldRef.current;
+    const cols = world.grid[0]?.length ?? 0;
+    const rows = world.grid.length;
+
+    setSize({
+      widthPx: cols * TILE_SIZE,
+      heightPx: rows * TILE_SIZE,
+    });
+  }, [worldRef]);
+
+  useEffect(() => {
+    if (!size) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const dpr = window.devicePixelRatio || 1;
 
     // Set the display size
-    canvas.style.width = `${widthPx}px`;
-    canvas.style.height = `${heightPx}px`;
+    canvas.style.width = `${size.widthPx}px`;
+    canvas.style.height = `${size.heightPx}px`;
 
     // Set the actual pixel buffer size
-    canvas.width = Math.floor(widthPx * dpr);
-    canvas.height = Math.floor(heightPx * dpr);
+    canvas.width = Math.floor(size.widthPx * dpr);
+    canvas.height = Math.floor(size.heightPx * dpr);
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     // Scale so drawing uses CSS pixels
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctxRef.current = ctx;
+
+    onReady({
+      render: () => {
+        const ctxNow = ctxRef.current;
+        if (!ctxNow) return;
+        drawWorld(ctxNow, worldRef.current);
+      },
+    });
 
     // Draw once
-    drawWorld(ctx, world);
-  }, [world, widthPx, heightPx]);
+    drawWorld(ctx, worldRef.current);
+  }, [size, onReady, worldRef]);
 
   return (
     <canvas

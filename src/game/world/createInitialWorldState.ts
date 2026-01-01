@@ -1,4 +1,4 @@
-import { Directions } from "../types/Direction";
+import { DIRECTIONS } from "../types/Direction";
 import type { Player } from "../types/Player";
 import type { StatusEffect } from "../types/StatusEffect";
 import type { WorldState } from "../types/WorldState";
@@ -17,7 +17,7 @@ function createDefaultPlayer(): Player {
     attackPower: 5,
     defensePower: 2,
 
-    facing: Directions.South,
+    facing: DIRECTIONS.South,
     moveSpeed: 1,
     targetR: null,
     targetC: null,
