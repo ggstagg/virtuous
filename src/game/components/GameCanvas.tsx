@@ -4,6 +4,46 @@ import type { Tile } from "../types/Tile";
 
 const TILE_SIZE = 32;
 
+function drawDirectionArrow(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  size: number,
+  facing: string
+) {
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+
+  switch (facing) {
+    case "north":
+      ctx.moveTo(cx, cy - size);
+      ctx.lineTo(cx - size * 0.6, cy + size * 0.6);
+      ctx.lineTo(cx + size * 0.6, cy + size * 0.6);
+      break;
+
+    case "south":
+      ctx.moveTo(cx, cy + size);
+      ctx.lineTo(cx - size * 0.6, cy - size * 0.6);
+      ctx.lineTo(cx + size * 0.6, cy - size * 0.6);
+      break;
+
+    case "west":
+      ctx.moveTo(cx - size, cy);
+      ctx.lineTo(cx + size * 0.6, cy - size * 0.6);
+      ctx.lineTo(cx + size * 0.6, cy + size * 0.6);
+      break;
+
+    case "east":
+      ctx.moveTo(cx + size, cy);
+      ctx.lineTo(cx - size * 0.6, cy - size * 0.6);
+      ctx.lineTo(cx - size * 0.6, cy + size * 0.6);
+      break;
+  }
+
+  ctx.closePath();
+  ctx.fill();
+}
+
 function drawWorld(ctx: CanvasRenderingContext2D, world: WorldState) {
   const rows = world.grid.length;
   const cols = world.grid[0]?.length ?? 0;
@@ -47,10 +87,35 @@ function drawWorld(ctx: CanvasRenderingContext2D, world: WorldState) {
   }
 
   // player
-  const px = world.player.c * TILE_SIZE;
-  const py = world.player.r * TILE_SIZE;
+  let drawR = world.player.r;
+  let drawC = world.player.c;
+
+  if (world.player.targetR !== null && world.player.targetC !== null) {
+    const t =
+      world.player.moveDurationMs <= 0
+        ? 1
+        : Math.min(
+            1,
+            world.player.moveProgressMs / world.player.moveDurationMs
+          );
+
+    drawR =
+      world.player.startR + (world.player.targetR - world.player.startR) * t;
+    drawC =
+      world.player.startC + (world.player.targetC - world.player.startC) * t;
+  }
+
+  const px = drawC * TILE_SIZE;
+  const py = drawR * TILE_SIZE;
+
   ctx.fillStyle = "#4aa3ff";
   ctx.fillRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6);
+
+  // arrow to indicate direction of travel
+  const centerX = px + TILE_SIZE / 2;
+  const centerY = py + TILE_SIZE / 2;
+
+  drawDirectionArrow(ctx, centerX, centerY, TILE_SIZE * 0.25, world.player.facing);
 
   ctx.fillStyle = "white";
   ctx.font = "12px sans-serif";

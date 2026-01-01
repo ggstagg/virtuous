@@ -19,8 +19,15 @@ function createDefaultPlayer(): Player {
 
     facing: DIRECTIONS.South,
     moveSpeed: 1,
+
+    startR: 2,
+    startC: 2,
     targetR: null,
     targetC: null,
+    moveProgressMs: 0,
+
+    moveCooldownMs: 120,
+    moveDurationMs: 120,
 
     gold: 0,
     food: 5,
