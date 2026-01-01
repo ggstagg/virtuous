@@ -1,16 +1,16 @@
 import type { Enemy } from "./Enemy";
+import type { Grid } from "./Grid";
 import type { Neutral } from "./Neutral";
 import type { Player } from "./Player";
-import type { Tile } from "./Tile";
 
 export interface WorldState {
-    grid: Tile[][];
+  grid: Grid;
 
-    player: Player;
+  player: Player;
 
-    enemies: Record<string, Enemy>;
-    neutrals: Record<string, Neutral>;
+  enemies: Record<string, Enemy>;
+  neutrals: Record<string, Neutral>;
 
-    tick: number;
-    seed: number;
+  tick: number;
+  seed: number;
 }

@@ -1,10 +1,10 @@
-import type { Direction } from "./Direction";
+import type { Directions } from "./Direction";
 
 export interface Portal {
   id: string;
   r: number;
   c: number;
-  allowedDirections: Direction[];
+  allowedDirections: Directions[];
   destinationZone: string;
   destinationR: number;
   destinationC: number;

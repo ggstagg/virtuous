@@ -1,4 +1,4 @@
-import type { Direction } from "./Direction";
+import type { Directions } from "./Direction";
 import type { Item } from "./Item";
 import type { StatusEffect } from "./StatusEffect";
 
@@ -12,7 +12,7 @@ export interface EntityBase {
   attackPower: number;
   defensePower: number;
 
-  facing: Direction;
+  facing: Directions;
   moveSpeed: number;
   targetR: number | null;
   targetC: number | null;

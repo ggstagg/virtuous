@@ -1,11 +1,11 @@
-export const Direction = {
+export const Directions = {
   North: "north",
   South: "south",
   West: "west",
   East: "east",
 };
 
-export type Direction = (typeof Direction)[keyof typeof Direction];
+export type Direction = string;
 
 // dr = change in row, dc = change in column
 export const DirectionDelta: Record<Direction, { dr: number; dc: number }> = {
