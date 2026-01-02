@@ -3,6 +3,9 @@ import "./App.css";
 import { createInitialWorldState } from "./game/world/createInitialWorldState";
 import {
   GameCanvas,
+  TILE_SIZE,
+  VIEW_H,
+  VIEW_W,
   type GameCanvasHandle,
 } from "./game/components/GameCanvas";
 import type { WorldState } from "./game/types/WorldState";
@@ -13,12 +16,16 @@ import {
   type InputState,
 } from "./game/systems/inputSystem";
 import { stepWorld } from "./game/systems/stepWorld";
+import { type Camera } from "./game/types/Camera";
+import { cameraSystem, createCamera } from "./game/systems/cameraSystem";
 
 const SIM_TICK_MS = 10;
 
 function App() {
   const worldRef = useRef<WorldState>(createInitialWorldState());
   const inputRef = useRef<InputState>(createInputState());
+
+  const cameraRef = useRef<Camera>(createCamera(VIEW_W, VIEW_H));
 
   const loopHandleRef = useRef<ReturnType<typeof startLoop> | null>(null);
   const loopStartedRef = useRef(false);
@@ -42,9 +49,12 @@ function App() {
       simTickMs: SIM_TICK_MS,
       stepSim: (dtMs) => {
         stepWorld(worldRef.current, inputRef.current, dtMs);
+        cameraSystem(worldRef.current, cameraRef.current, dtMs, {
+          tileSize: TILE_SIZE,
+        });
       },
       render: () => {
-        canvasHandle.render();
+        canvasHandle.render(cameraRef.current);
       },
     });
 

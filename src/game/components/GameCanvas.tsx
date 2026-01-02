@@ -1,8 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { Tile } from "../types/Tile";
+import type { Camera } from "../types/Camera";
 
-const TILE_SIZE = 32;
+export const TILE_SIZE = 32;
+
+export const VIEW_W = 1000;
+export const VIEW_H = 660;
 
 function drawDirectionArrow(
   ctx: CanvasRenderingContext2D,
@@ -44,12 +48,21 @@ function drawDirectionArrow(
   ctx.fill();
 }
 
-function drawWorld(ctx: CanvasRenderingContext2D, world: WorldState) {
+function drawWorld(
+  ctx: CanvasRenderingContext2D,
+  world: WorldState,
+  camera: Camera
+) {
   const rows = world.grid.length;
   const cols = world.grid[0]?.length ?? 0;
 
   // background clear
   ctx.clearRect(0, 0, cols * TILE_SIZE, rows * TILE_SIZE);
+
+  ctx.save();
+
+  ctx.scale(camera.zoom, camera.zoom);
+  ctx.translate(-camera.x, -camera.y);
 
   // tiles
   for (let r = 0; r < rows; r++) {
@@ -115,15 +128,24 @@ function drawWorld(ctx: CanvasRenderingContext2D, world: WorldState) {
   const centerX = px + TILE_SIZE / 2;
   const centerY = py + TILE_SIZE / 2;
 
-  drawDirectionArrow(ctx, centerX, centerY, TILE_SIZE * 0.25, world.player.facing);
+  drawDirectionArrow(
+    ctx,
+    centerX,
+    centerY,
+    TILE_SIZE * 0.25,
+    world.player.facing
+  );
+
+  ctx.restore();
 
   ctx.fillStyle = "white";
   ctx.font = "12px sans-serif";
   ctx.fillText(`tick: ${world.tick}`, 6, 14);
+  ctx.fillText(`zoom: ${camera.zoom.toFixed(2)}`, 6, 28);
 }
 
 export interface GameCanvasHandle {
-  render: () => void;
+  render: (camera: Camera) => void;
 }
 
 export function GameCanvas({
@@ -136,37 +158,19 @@ export function GameCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  const [size, setSize] = useState<{
-    widthPx: number;
-    heightPx: number;
-  } | null>(null);
-
   useEffect(() => {
-    const world = worldRef.current;
-    const cols = world.grid[0]?.length ?? 0;
-    const rows = world.grid.length;
-
-    setSize({
-      widthPx: cols * TILE_SIZE,
-      heightPx: rows * TILE_SIZE,
-    });
-  }, [worldRef]);
-
-  useEffect(() => {
-    if (!size) return;
-
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const dpr = window.devicePixelRatio || 1;
 
     // Set the display size
-    canvas.style.width = `${size.widthPx}px`;
-    canvas.style.height = `${size.heightPx}px`;
+    canvas.style.width = `${VIEW_W}px`;
+    canvas.style.height = `${VIEW_H}px`;
 
     // Set the actual pixel buffer size
-    canvas.width = Math.floor(size.widthPx * dpr);
-    canvas.height = Math.floor(size.heightPx * dpr);
+    canvas.width = Math.floor(VIEW_W * dpr);
+    canvas.height = Math.floor(VIEW_H * dpr);
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -176,16 +180,13 @@ export function GameCanvas({
     ctxRef.current = ctx;
 
     onReady({
-      render: () => {
+      render: (camera: Camera) => {
         const ctxNow = ctxRef.current;
         if (!ctxNow) return;
-        drawWorld(ctxNow, worldRef.current);
+        drawWorld(ctxNow, worldRef.current, camera);
       },
     });
-
-    // Draw once
-    drawWorld(ctx, worldRef.current);
-  }, [size, onReady, worldRef]);
+  }, [onReady, worldRef]);
 
   return (
     <canvas
