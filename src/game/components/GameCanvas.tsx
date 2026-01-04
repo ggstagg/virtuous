@@ -86,7 +86,16 @@ function drawWorld(
       // item (simple circle)
       if (tile.item) {
         ctx.beginPath();
-        ctx.fillStyle = tile.item.type === "gold" ? "#d7b400" : "#6ad06a";
+        switch (tile.item.type) {
+          case "gold":
+            ctx.fillStyle = "#d7b400";
+            break;
+          case "food":
+            ctx.fillStyle = "#6ad06a";
+            break;
+          case "key":
+            ctx.fillStyle = "#ecececff";
+        }
         ctx.arc(
           x + TILE_SIZE / 2,
           y + TILE_SIZE / 2,
@@ -142,6 +151,9 @@ function drawWorld(
   ctx.font = "12px sans-serif";
   ctx.fillText(`tick: ${world.tick}`, 6, 14);
   ctx.fillText(`zoom: ${camera.zoom.toFixed(2)}`, 6, 28);
+  ctx.fillText(`gold: ${world.player.gold}`, 6, 42);
+  ctx.fillText(`food: ${world.player.food}`, 6, 56);
+  ctx.fillText(`inventory size: ${world.player.inventory.length}`, 6, 70);
 }
 
 export interface GameCanvasHandle {

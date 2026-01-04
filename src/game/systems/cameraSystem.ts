@@ -49,7 +49,7 @@ export function createCamera(viewW: number, viewH: number): Camera {
     y: 0,
     viewW,
     viewH,
-    zoom: 1.4,
+    zoom: 1.5,
     followHalfLifeMs: 150,
   };
 }

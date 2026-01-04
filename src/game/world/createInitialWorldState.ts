@@ -1,54 +1,12 @@
-import { DIRECTIONS } from "../types/Direction";
-import type { Player } from "../types/Player";
-import type { StatusEffect } from "../types/StatusEffect";
+// import { spawnGold } from "../systems/itemHelpers";
+import { spawnFood, spawnGold, spawnKey } from "../systems/itemHelpers";
 import type { WorldState } from "../types/WorldState";
-import { createOverworldSection1 } from "./createOverworldSection1";
-
-function createDefaultPlayer(): Player {
-  const statusEffects: StatusEffect[] = [];
-
-  return {
-    id: "test-player",
-    r: 2,
-    c: 2,
-
-    hp: 20,
-    maxHp: 20,
-    attackPower: 5,
-    defensePower: 2,
-
-    facing: DIRECTIONS.South,
-    moveSpeed: 1,
-
-    startR: 2,
-    startC: 2,
-    targetR: null,
-    targetC: null,
-    moveProgressMs: 0,
-
-    moveCooldownMs: 120,
-    moveDurationMs: 120,
-
-    gold: 0,
-    food: 5,
-    inventory: [],
-
-    isAggroed: false,
-    isScared: false,
-    isIntimidated: false,
-
-    visionRadius: 5,
-
-    statusEffects,
-
-    virtuePoints: 0,
-    vicePoints: 0,
-  };
-}
+import { createOverworldSection1Layout } from "./createOverworldSection1";
+import { createDefaultPlayer } from "./createPlayer";
 
 export function createInitialWorldState(): WorldState {
-  const grid = createOverworldSection1();
   const player = createDefaultPlayer();
+  const grid = createOverworldSection1Layout();
 
   // mark player on the grid
   if (grid[player.r]?.[player.c]) {
@@ -57,7 +15,7 @@ export function createInitialWorldState(): WorldState {
 
   const seed = 12345;
 
-  return {
+  const initialWorldState: WorldState = {
     grid,
 
     player,
@@ -68,4 +26,14 @@ export function createInitialWorldState(): WorldState {
     tick: 0,
     seed,
   };
+
+  // items on floor
+  spawnGold(initialWorldState, 10, 12, 10);
+  spawnGold(initialWorldState, 4, 25, 15);
+  spawnFood(initialWorldState, 19, 9, 1);
+  spawnGold(initialWorldState, 22, 22, 25);
+  spawnFood(initialWorldState, 25, 6, 2);
+  spawnKey(initialWorldState, 4, 5, "key-1");
+
+  return initialWorldState;
 }

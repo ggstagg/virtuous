@@ -1,5 +1,4 @@
 import type { Grid } from "../types/Grid";
-import type { Item } from "../types/Item";
 import type { TerrainType, Tile } from "../types/Tile";
 
 export const OVERWORLD_SECTION_1_ROWS = 30;
@@ -21,23 +20,7 @@ function placeWall(grid: Grid, r: number, c: number) {
   }
 }
 
-function placeItem(grid: Grid, r: number, c: number, item: Item) {
-  if (r > -1 && c > -1 && r < grid.length && c < grid[0].length) {
-    if (grid[r][c].isWalkable) grid[r][c].item = item;
-  }
-}
-
-let itemCounter = 0;
-function newItem(type: Item["type"], quantity: number): Item {
-  itemCounter++;
-  return {
-    id: `item-${itemCounter}`,
-    type,
-    quantity,
-  };
-}
-
-export function createOverworldSection1(): Tile[][] {
+ export function createOverworldSection1Layout(): Tile[][] {
   const grid: Grid = Array.from({ length: OVERWORLD_SECTION_1_ROWS }, () =>
     Array.from({ length: OVERWORLD_SECTION_1_COLS }, () => makeTile("floor"))
   );
@@ -77,13 +60,6 @@ export function createOverworldSection1(): Tile[][] {
   }
 
   grid[top][Math.floor((left + right) / 2)] = makeTile("floor");
-
-  // items on floor
-  placeItem(grid, 10, 12, newItem("gold", 10));
-  placeItem(grid, 10, 16, newItem("gold", 15));
-  placeItem(grid, 19, 9, newItem("food", 1));
-  placeItem(grid, 22, 22, newItem("gold", 25));
-  placeItem(grid, 25, 6, newItem("food", 2));
 
   return grid;
 }
