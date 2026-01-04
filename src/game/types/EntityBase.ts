@@ -16,6 +16,12 @@ export interface EntityBase {
   moveSpeed: number;
   targetR: number | null;
   targetC: number | null;
+  startR: number;
+  startC: number;
+
+  moveCooldownMs: number;
+  moveDurationMs: number;
+  moveProgressMs: number;
 
   gold: number;
   food: number;
