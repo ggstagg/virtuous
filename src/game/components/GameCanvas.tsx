@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { Camera } from "../types/Camera";
-import { drawEntity } from "../drawHelpers/drawEntity";
-import { drawEnemyVision } from "../drawHelpers/drawEnemyVision";
 import { drawHealthBar } from "../drawHelpers/drawHealthBar";
 import { drawGameOver } from "../drawHelpers/drawGameOver";
 import { drawDebug } from "../drawHelpers/drawDebug";
 import { TILE_SIZE, VIEW_H, VIEW_W } from "../constants/viewConstants";
 import { drawTiles } from "../drawHelpers/drawTiles";
+import { drawEntities } from "../drawHelpers/drawEntities";
 
 function drawWorld(
   ctx: CanvasRenderingContext2D,
@@ -26,15 +25,7 @@ function drawWorld(
   ctx.translate(-camera.x, -camera.y);
 
   drawTiles(ctx, rows, cols, world);
-
-  drawEntity(ctx, world.player, "#4aa3ff");
-
-  for (const enemy of Object.values(world.enemies))
-    drawEnemyVision(ctx, world, enemy);
-
-  for (const enemy of Object.values(world.enemies)) {
-    drawEntity(ctx, enemy, "#ad1010ff");
-  }
+  drawEntities(ctx, world);
 
   ctx.restore();
 

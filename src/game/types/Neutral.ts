@@ -1,13 +1,18 @@
+import type { Direction } from "./Direction";
 import type { EntityBase } from "./EntityBase";
-import type { NPC } from "./NPC";
 import type { SocialGroup } from "./SocialGroup";
 
-export type NeutralEntityType = "pig" | "miser";
+export type NeutralEntityType = "pig" | "miser" | "villager" | "maiden";
 
-export interface Neutral extends EntityBase, NPC {
+export interface Neutral extends EntityBase {
   neutralEntityType: NeutralEntityType;
   socialGroup: SocialGroup;
 
   bravery: number;
   happiness: number;
+
+  thinkCooldownMs: number;
+  thinkIntervalMs: number;
+
+  nextDirection: Direction | null;
 }

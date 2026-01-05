@@ -4,6 +4,8 @@ import { enemyMovementSystem } from "./enemyMovementSystem";
 import { healthSystem } from "./healthSystem";
 import type { InputState } from "./inputSystem";
 import { itemPickupSystem } from "./itemPickupSystem";
+import { neutralAISystem } from "./neutralAISystem";
+import { neutralMovementSystem } from "./neutralMovementSystem";
 import { playerMovementSystem } from "./playerMovementSystem";
 
 export function stepWorld(world: WorldState, input: InputState, dtMs: number) {
@@ -14,6 +16,9 @@ export function stepWorld(world: WorldState, input: InputState, dtMs: number) {
 
   enemyAISystem(world, dtMs);
   enemyMovementSystem(world, dtMs);
+
+  neutralAISystem(world, dtMs);
+  neutralMovementSystem(world, dtMs);
 
   healthSystem(world, dtMs);
 

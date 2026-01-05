@@ -1,8 +1,8 @@
 import type { Grid } from "../types/Grid";
 import type { TerrainType, Tile } from "../types/Tile";
 
-export const OVERWORLD_SECTION_1_ROWS = 30;
-export const OVERWORLD_SECTION_1_COLS = 30;
+export const OVERWORLD_SECTION_1_ROWS = 50;
+export const OVERWORLD_SECTION_1_COLS = 50;
 
 function makeTile(terrain: TerrainType): Tile {
   return {
@@ -20,7 +20,7 @@ function placeWall(grid: Grid, r: number, c: number) {
   }
 }
 
- export function createOverworldSection1Layout(): Tile[][] {
+export function createOverworldSection1Layout(): Tile[][] {
   const grid: Grid = Array.from({ length: OVERWORLD_SECTION_1_ROWS }, () =>
     Array.from({ length: OVERWORLD_SECTION_1_COLS }, () => makeTile("floor"))
   );

@@ -13,6 +13,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --color-player: theme(colors.sky.400);
+  --color-neutral: theme(colors.emerald.500);
+  --color-enemy: theme(colors.red.700);
 }
 
 a {
