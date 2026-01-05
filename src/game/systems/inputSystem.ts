@@ -2,11 +2,27 @@ import { DIRECTIONS, type Direction } from "../types/Direction";
 
 export interface InputState {
   heldDirections: Set<Direction>;
+  functionKeys: Set<string>;
 }
 
 export function createInputState(): InputState {
-  return { heldDirections: new Set() };
+  return { heldDirections: new Set(), functionKeys: new Set() };
 }
+
+const inputKeys: Set<string> = new Set([
+  "w",
+  "a",
+  "s",
+  "d",
+  "W",
+  "A",
+  "S",
+  "D",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+]);
 
 function keyToDirection(key: string): Direction | null {
   switch (key) {
@@ -31,8 +47,14 @@ function keyToDirection(key: string): Direction | null {
   }
 }
 
+export function clearPressed(input: InputState) {
+  input.functionKeys.clear();
+}
+
 export function attachKeyboard(input: InputState): () => void {
   const onKeyDown = (e: KeyboardEvent) => {
+    if (!e.repeat && !inputKeys.has(e.key)) input.functionKeys.add(e.key);
+
     const direction = keyToDirection(e.key);
     if (!direction) return;
 

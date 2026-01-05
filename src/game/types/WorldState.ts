@@ -13,4 +13,6 @@ export interface WorldState {
 
   tick: number;
   seed: number;
+
+  gameOver: boolean;
 }

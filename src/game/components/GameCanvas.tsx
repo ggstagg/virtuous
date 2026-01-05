@@ -1,84 +1,13 @@
 import { useEffect, useRef } from "react";
 import type { WorldState } from "../types/WorldState";
-import type { Tile } from "../types/Tile";
 import type { Camera } from "../types/Camera";
-import type { EntityBase } from "../types/EntityBase";
-
-export const TILE_SIZE = 32;
-
-export const VIEW_W = 1000;
-export const VIEW_H = 660;
-
-function drawDirectionArrow(
-  ctx: CanvasRenderingContext2D,
-  cx: number,
-  cy: number,
-  size: number,
-  facing: string
-) {
-  ctx.fillStyle = "white";
-  ctx.beginPath();
-
-  switch (facing) {
-    case "north":
-      ctx.moveTo(cx, cy - size);
-      ctx.lineTo(cx - size * 0.6, cy + size * 0.6);
-      ctx.lineTo(cx + size * 0.6, cy + size * 0.6);
-      break;
-
-    case "south":
-      ctx.moveTo(cx, cy + size);
-      ctx.lineTo(cx - size * 0.6, cy - size * 0.6);
-      ctx.lineTo(cx + size * 0.6, cy - size * 0.6);
-      break;
-
-    case "west":
-      ctx.moveTo(cx - size, cy);
-      ctx.lineTo(cx + size * 0.6, cy - size * 0.6);
-      ctx.lineTo(cx + size * 0.6, cy + size * 0.6);
-      break;
-
-    case "east":
-      ctx.moveTo(cx + size, cy);
-      ctx.lineTo(cx - size * 0.6, cy - size * 0.6);
-      ctx.lineTo(cx - size * 0.6, cy + size * 0.6);
-      break;
-  }
-
-  ctx.closePath();
-  ctx.fill();
-}
-
-function drawEntity(
-  ctx: CanvasRenderingContext2D,
-  entity: EntityBase,
-  color: string
-) {
-  let drawR = entity.r;
-  let drawC = entity.c;
-
-  if (entity.targetR !== null && entity.targetC !== null) {
-    const t =
-      entity.moveDurationMs <= 0
-        ? 1
-        : Math.min(1, entity.moveProgressMs / entity.moveDurationMs);
-
-    drawR = entity.startR + (entity.targetR - entity.startR) * t;
-    drawC = entity.startC + (entity.targetC - entity.startC) * t;
-  }
-
-  const px = drawC * TILE_SIZE;
-  const py = drawR * TILE_SIZE;
-
-  ctx.fillStyle = color;
-  ctx.fillRect(px + 3, py + 3, TILE_SIZE - 6, TILE_SIZE - 6);
-
-  // arrow to indicate direction of travel
-  const centerX = px + TILE_SIZE / 2;
-  const centerY = py + TILE_SIZE / 2;
-
-  drawDirectionArrow(ctx, centerX, centerY, TILE_SIZE * 0.25, entity.facing);
-}
+import { drawEntity } from "../drawHelpers/drawEntity";
+import { drawEnemyVision } from "../drawHelpers/drawEnemyVision";
+import { drawHealthBar } from "../drawHelpers/drawHealthBar";
+import { drawGameOver } from "../drawHelpers/drawGameOver";
+import { drawDebug } from "../drawHelpers/drawDebug";
+import { TILE_SIZE, VIEW_H, VIEW_W } from "../constants/viewConstants";
+import { drawTiles } from "../drawHelpers/drawTiles";
 
 function drawWorld(
   ctx: CanvasRenderingContext2D,
@@ -96,51 +25,12 @@ function drawWorld(
   ctx.scale(camera.zoom, camera.zoom);
   ctx.translate(-camera.x, -camera.y);
 
-  // tiles
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const tile: Tile = world.grid[r][c];
-      const x = c * TILE_SIZE;
-      const y = r * TILE_SIZE;
-
-      // terrain
-      if (tile.terrain === "wall") {
-        ctx.fillStyle = "#2b2b2b";
-      } else {
-        ctx.fillStyle = "#1a1a1a";
-      }
-      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-
-      // grid lines
-      ctx.strokeStyle = "rgba(255,255,255,0.06)";
-      ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
-
-      // item (simple circle)
-      if (tile.item) {
-        ctx.beginPath();
-        switch (tile.item.type) {
-          case "gold":
-            ctx.fillStyle = "#d7b400";
-            break;
-          case "food":
-            ctx.fillStyle = "#6ad06a";
-            break;
-          case "key":
-            ctx.fillStyle = "#ecececff";
-        }
-        ctx.arc(
-          x + TILE_SIZE / 2,
-          y + TILE_SIZE / 2,
-          Math.max(3, TILE_SIZE * 0.18),
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-      }
-    }
-  }
+  drawTiles(ctx, rows, cols, world);
 
   drawEntity(ctx, world.player, "#4aa3ff");
+
+  for (const enemy of Object.values(world.enemies))
+    drawEnemyVision(ctx, world, enemy);
 
   for (const enemy of Object.values(world.enemies)) {
     drawEntity(ctx, enemy, "#ad1010ff");
@@ -148,13 +38,11 @@ function drawWorld(
 
   ctx.restore();
 
-  ctx.fillStyle = "white";
-  ctx.font = "12px sans-serif";
-  ctx.fillText(`tick: ${world.tick}`, 6, 14);
-  ctx.fillText(`zoom: ${camera.zoom.toFixed(2)}`, 6, 28);
-  ctx.fillText(`gold: ${world.player.gold}`, 6, 42);
-  ctx.fillText(`food: ${world.player.food}`, 6, 56);
-  ctx.fillText(`inventory size: ${world.player.inventory.length}`, 6, 70);
+  drawHealthBar(ctx, world.player.hp, world.player.maxHp);
+
+  if (world.gameOver) drawGameOver(ctx, camera.viewW, camera.viewH);
+
+  drawDebug(ctx, world, camera);
 }
 
 export interface GameCanvasHandle {

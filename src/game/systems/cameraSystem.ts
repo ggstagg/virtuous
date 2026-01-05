@@ -1,8 +1,11 @@
 import type { WorldState } from "../types/WorldState";
 import type { Camera } from "../types/Camera";
+import type { InputState } from "./inputSystem";
+import { ZOOMS } from "../constants/viewConstants";
 
 export interface CameraParams {
   tileSize: number;
+  input: InputState;
 }
 
 function clamp(v: number, lo: number, hi: number) {
@@ -49,7 +52,7 @@ export function createCamera(viewW: number, viewH: number): Camera {
     y: 0,
     viewW,
     viewH,
-    zoom: 1.5,
+    zoom: 1,
     followHalfLifeMs: 150,
   };
 }
@@ -65,6 +68,11 @@ export function cameraSystem(
 
   // Compute player's draw position in world pixels (use interpolation if moving)
   const { drawX, drawY } = getPlayerDrawPosPx(world, tileSize);
+
+  if (params.input.functionKeys.has("v")) {
+    const i = ZOOMS.indexOf(camera.zoom);
+    camera.zoom = ZOOMS[(i + 1) % ZOOMS.length];
+  }
 
   const visibleW = camera.viewW / camera.zoom;
   const visibleH = camera.viewH / camera.zoom;

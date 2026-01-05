@@ -41,5 +41,7 @@ export function createDefaultPlayer(): Player {
 
     virtuePoints: 0,
     vicePoints: 0,
+
+    invulnerabilityMs: 0,
   };
 }

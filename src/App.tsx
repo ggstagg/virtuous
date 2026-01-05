@@ -3,21 +3,20 @@ import "./App.css";
 import { createInitialWorldState } from "./game/world/createInitialWorldState";
 import {
   GameCanvas,
-  TILE_SIZE,
-  VIEW_H,
-  VIEW_W,
   type GameCanvasHandle,
 } from "./game/components/GameCanvas";
 import type { WorldState } from "./game/types/WorldState";
 import { startLoop } from "./game/systems/gameLoop";
 import {
   attachKeyboard,
+  clearPressed,
   createInputState,
   type InputState,
 } from "./game/systems/inputSystem";
 import { stepWorld } from "./game/systems/stepWorld";
 import { type Camera } from "./game/types/Camera";
 import { cameraSystem, createCamera } from "./game/systems/cameraSystem";
+import { TILE_SIZE, VIEW_H, VIEW_W } from "./game/constants/viewConstants";
 
 const SIM_TICK_MS = 10;
 
@@ -33,6 +32,11 @@ function App() {
   const [canvasHandle, setCanvasHandle] = useState<GameCanvasHandle | null>(
     null
   );
+
+  function resetGame() {
+    worldRef.current = createInitialWorldState();
+    cameraRef.current = createCamera(VIEW_W, VIEW_H);
+  }
 
   useEffect(() => {
     const detach = attachKeyboard(inputRef.current);
@@ -51,7 +55,9 @@ function App() {
         stepWorld(worldRef.current, inputRef.current, dtMs);
         cameraSystem(worldRef.current, cameraRef.current, dtMs, {
           tileSize: TILE_SIZE,
+          input: inputRef.current,
         });
+        clearPressed(inputRef.current);
       },
       render: () => {
         canvasHandle.render(cameraRef.current);
@@ -64,6 +70,14 @@ function App() {
       loopStartedRef.current = false;
     };
   }, [canvasHandle]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === "r") resetGame();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   return (
     <div className="p-6">

@@ -1,3 +1,4 @@
+import { bfsPathfinder } from "../systems/pathfinding/bfs";
 import { DIRECTIONS } from "../types/Direction";
 import type { Enemy } from "../types/Enemy";
 import type { StatusEffect } from "../types/StatusEffect";
@@ -46,5 +47,11 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
 
     targetEntityId: "test-player",
     nextDirection: null,
+
+    pathfinder: bfsPathfinder,
+    currentPath: null,
+    pathIndex: 0,
+    pathGoalR: null,
+    pathGoalC: null,
   };
 }

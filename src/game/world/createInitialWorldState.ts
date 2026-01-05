@@ -31,6 +31,8 @@ export function createInitialWorldState(): WorldState {
 
     tick: 0,
     seed,
+
+    gameOver: false,
   };
 
   for (const enemy of enemyList) {

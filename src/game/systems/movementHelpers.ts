@@ -50,11 +50,9 @@ export function stepEntityMovement(
 
     if (entity.moveProgressMs >= entity.moveDurationMs) {
       // Commit logical position; occupancy was already handled at move start
-      entity.r = entity.targetR;
-      entity.c = entity.targetC;
-
       entity.startR = entity.r;
       entity.startC = entity.c;
+
       entity.targetR = null;
       entity.targetC = null;
       entity.moveProgressMs = 0;
@@ -74,8 +72,8 @@ export function stepEntityMovement(
 
   entity.facing = direction;
 
-  if (!inBounds(world, nextR, nextC)) return true;
-  if (!isWalkable(world, nextR, nextC)) return true;
+  if (!inBounds(world, nextR, nextC)) return false;
+  if (!isWalkable(world, nextR, nextC)) return false;
 
   const fromR = entity.r;
   const fromC = entity.c;
@@ -91,6 +89,10 @@ export function stepEntityMovement(
   // Start move
   entity.startR = fromR;
   entity.startC = fromC;
+
+  entity.r = nextR;
+  entity.c = nextC;
+
   entity.targetR = nextR;
   entity.targetC = nextC;
   entity.moveProgressMs = 0;
