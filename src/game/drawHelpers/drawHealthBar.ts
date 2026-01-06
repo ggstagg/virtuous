@@ -1,11 +1,10 @@
-import { VIEW_W } from "../constants/viewConstants";
-
 export function drawHealthBar(
   ctx: CanvasRenderingContext2D,
   hp: number,
-  maxHp: number
+  maxHp: number,
+  width: number
 ) {
-  const x = VIEW_W - 200,
+  const x = width - 200,
     y = 12,
     w = 180,
     h = 16;

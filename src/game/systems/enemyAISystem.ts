@@ -3,6 +3,8 @@ import type { Enemy } from "../types/Enemy";
 import { DIRECTIONS, type Direction } from "../types/Direction";
 import type { PathNode } from "../types/Pathfinding";
 import { manhattanDistance } from "./pathfinding/manhattan";
+import { applyDamage } from "./combat";
+import { pushEvent } from "./eventLog";
 
 function directionFromTo(
   r0: number,
@@ -23,6 +25,7 @@ function directionFromTo(
 }
 
 function clearPlan(enemy: Enemy) {
+  enemy.isAggroed = false;
   enemy.currentPath = null;
   enemy.pathIndex = 0;
   enemy.nextDirection = null;
@@ -47,6 +50,11 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
         player.r,
         player.c
       );
+      if (player.invulnerabilityMs <= 0) {
+        const damage = Math.max(1, enemy.attackPower);
+        applyDamage(world, player, damage);
+        player.invulnerabilityMs = 400;
+      }
       enemy.currentPath = null;
       enemy.pathIndex = 0;
       continue;
@@ -55,6 +63,9 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
       clearPlan(enemy);
       continue;
     }
+
+    enemy.isAggroed = true;
+    pushEvent(world, "bad", `${player.id} aggroed ${enemy.id}`);
 
     const goalChanged =
       enemy.pathGoalR !== player.r || enemy.pathGoalC !== player.c;

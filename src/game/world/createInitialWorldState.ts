@@ -16,7 +16,7 @@ export function createInitialWorldState(): WorldState {
     grid[player.r][player.c].entityId = player.id;
   }
 
-  const enemy1: Enemy = createDefaultEnemy("enemy-1", 14, 4);
+  const enemy1: Enemy = createDefaultEnemy("enemy-1", 30, 4);
   const enemy2: Enemy = createDefaultEnemy("enemy-2", 25, 25);
   const enemyList = [enemy1, enemy2];
 
@@ -37,6 +37,8 @@ export function createInitialWorldState(): WorldState {
 
     tick: 0,
     seed,
+
+    eventLog: [],
 
     gameOver: false,
   };

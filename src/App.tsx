@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
 import { createInitialWorldState } from "./game/world/createInitialWorldState";
 import {
   GameCanvas,
@@ -16,15 +15,20 @@ import {
 import { stepWorld } from "./game/systems/stepWorld";
 import { type Camera } from "./game/types/Camera";
 import { cameraSystem, createCamera } from "./game/systems/cameraSystem";
-import { TILE_SIZE, VIEW_H, VIEW_W } from "./game/constants/viewConstants";
+import { TILE_SIZE } from "./game/constants/viewConstants";
+import { computeLayout } from "./computeViewSize";
+import { GameHUD } from "./game/components/GameHUD";
 
 const SIM_TICK_MS = 10;
 
 function App() {
+  // const [{ viewW, viewH }, setViewSize] = useState(() => computeViewSize());
+  const [layout, setLayout] = useState(() => computeLayout());
+
   const worldRef = useRef<WorldState>(createInitialWorldState());
   const inputRef = useRef<InputState>(createInputState());
 
-  const cameraRef = useRef<Camera>(createCamera(VIEW_W, VIEW_H));
+  const cameraRef = useRef<Camera>(createCamera(layout.viewW, layout.viewH));
 
   const loopHandleRef = useRef<ReturnType<typeof startLoop> | null>(null);
   const loopStartedRef = useRef(false);
@@ -35,7 +39,7 @@ function App() {
 
   function resetGame() {
     worldRef.current = createInitialWorldState();
-    cameraRef.current = createCamera(VIEW_W, VIEW_H);
+    cameraRef.current = createCamera(layout.viewW, layout.viewH);
   }
 
   useEffect(() => {
@@ -72,6 +76,12 @@ function App() {
   }, [canvasHandle]);
 
   useEffect(() => {
+    const onResize = () => setLayout(computeLayout());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === "r") resetGame();
     };
@@ -80,8 +90,46 @@ function App() {
   }, []);
 
   return (
-    <div className="p-6">
-      <GameCanvas worldRef={worldRef} onReady={setCanvasHandle} />
+    <div
+      className="w-screen min-h-dvh overflow-hidden"
+      style={{
+        backgroundImage: `url(/dungeon-background-1.png)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/15 to-black/85" />{" "}
+      <div className="relative z-10 h-dvh w-screen flex items-center justify-center p-6">
+        <div
+          className="h-dvh w-screen flex items-center justify-center"
+          style={{ padding: layout.framePad }}
+        >
+          <div
+            className="bg-zinc-950 rounded-xl shadow-2xl"
+            style={{ padding: layout.framePad }}
+          >
+            <div className="flex" style={{ gap: layout.gap }}>
+              {/* Canvas */}
+              <div className="bg-black rounded-lg overflow-hidden">
+                {/* TODO: need to figure out how to update camera based on view availability */}
+                <GameCanvas
+                  worldRef={worldRef}
+                  width={layout.viewW}
+                  height={layout.viewH}
+                  onReady={setCanvasHandle}
+                />
+              </div>
+
+              {/* Sidebar */}
+              <GameHUD
+                worldRef={worldRef}
+                sidebarW={layout.sidebarW}
+                viewH={layout.viewH}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

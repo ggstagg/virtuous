@@ -1,38 +1,41 @@
 import { useEffect, useRef } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { Camera } from "../types/Camera";
-import { drawHealthBar } from "../drawHelpers/drawHealthBar";
 import { drawGameOver } from "../drawHelpers/drawGameOver";
 import { drawDebug } from "../drawHelpers/drawDebug";
-import { TILE_SIZE, VIEW_H, VIEW_W } from "../constants/viewConstants";
 import { drawTiles } from "../drawHelpers/drawTiles";
 import { drawEntities } from "../drawHelpers/drawEntities";
 
 function drawWorld(
   ctx: CanvasRenderingContext2D,
   world: WorldState,
-  camera: Camera
+  camera: Camera,
+  width: number,
+  height: number
 ) {
-  const rows = world.grid.length;
-  const cols = world.grid[0]?.length ?? 0;
-
-  // background clear
-  ctx.clearRect(0, 0, cols * TILE_SIZE, rows * TILE_SIZE);
+  // Clear the VIEWPORT (not the world)
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, width, height);
 
   ctx.save();
 
+  // snap camera to avoid seams
+  const snappedX = Math.round(camera.x * camera.zoom) / camera.zoom;
+  const snappedY = Math.round(camera.y * camera.zoom) / camera.zoom;
+
   ctx.scale(camera.zoom, camera.zoom);
-  ctx.translate(-camera.x, -camera.y);
+  ctx.translate(-snappedX, -snappedY);
+
+  const rows = world.grid.length;
+  const cols = world.grid[0]?.length ?? 0;
 
   drawTiles(ctx, rows, cols, world);
   drawEntities(ctx, world);
 
   ctx.restore();
 
-  drawHealthBar(ctx, world.player.hp, world.player.maxHp);
-
+  // drawHealthBar(ctx, world.player.hp, world.player.maxHp, width);
   if (world.gameOver) drawGameOver(ctx, camera.viewW, camera.viewH);
-
   drawDebug(ctx, world, camera);
 }
 
@@ -42,9 +45,13 @@ export interface GameCanvasHandle {
 
 export function GameCanvas({
   worldRef,
+  width,
+  height,
   onReady,
 }: {
   worldRef: React.MutableRefObject<WorldState>;
+  width: number;
+  height: number;
   onReady: (handle: GameCanvasHandle) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -57,15 +64,17 @@ export function GameCanvas({
     const dpr = window.devicePixelRatio || 1;
 
     // Set the display size
-    canvas.style.width = `${VIEW_W}px`;
-    canvas.style.height = `${VIEW_H}px`;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     // Set the actual pixel buffer size
-    canvas.width = Math.floor(VIEW_W * dpr);
-    canvas.height = Math.floor(VIEW_H * dpr);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    ctx.scale(devicePixelRatio, devicePixelRatio);
 
     // Scale so drawing uses CSS pixels
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -75,10 +84,10 @@ export function GameCanvas({
       render: (camera: Camera) => {
         const ctxNow = ctxRef.current;
         if (!ctxNow) return;
-        drawWorld(ctxNow, worldRef.current, camera);
+        drawWorld(ctxNow, worldRef.current, camera, width, height);
       },
     });
-  }, [onReady, worldRef]);
+  }, [onReady, worldRef, width, height]);
 
   return (
     <canvas

@@ -1,4 +1,5 @@
 import type { Enemy } from "./Enemy";
+import type { GameEvent } from "./GameEvent";
 import type { Grid } from "./Grid";
 import type { Neutral } from "./Neutral";
 import type { Player } from "./Player";
@@ -13,6 +14,8 @@ export interface WorldState {
 
   tick: number;
   seed: number;
+
+  eventLog: GameEvent[];
 
   gameOver: boolean;
 }

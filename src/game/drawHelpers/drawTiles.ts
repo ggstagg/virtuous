@@ -23,8 +23,6 @@ export function drawTiles(
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
 
       // grid lines
-      // ctx.strokeStyle = "rgba(255,255,255,0.06)";
-      // ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
 
       // item (simple circle)
       if (tile.item) {

@@ -19,6 +19,12 @@
   --color-enemy: theme(colors.red.700);
 }
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
