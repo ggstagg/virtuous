@@ -43,5 +43,6 @@ export function createDefaultPlayer(): Player {
     vicePoints: 0,
 
     invulnerabilityMs: 0,
+    maxInvulnerabilityMs: 400,
   };
 }

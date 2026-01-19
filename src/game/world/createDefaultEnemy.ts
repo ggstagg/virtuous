@@ -39,11 +39,16 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
     visionRadius: 8,
 
     statusEffects,
+    invulnerabilityMs: 0,
+    maxInvulnerabilityMs: 100,
 
     behaviorType: "chaser",
 
     thinkCooldownMs: 0,
     thinkIntervalMs: 200,
+
+    attackCooldownMs: 200,
+    attackIntervalMs: 200,
 
     targetEntityId: "test-player",
     nextDirection: null,

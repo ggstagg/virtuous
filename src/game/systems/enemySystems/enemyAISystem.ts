@@ -1,27 +1,28 @@
-import type { WorldState } from "../types/WorldState";
-import type { Enemy } from "../types/Enemy";
-import { DIRECTIONS, type Direction } from "../types/Direction";
-import type { PathNode } from "../types/Pathfinding";
-import { manhattanDistance } from "./pathfinding/manhattan";
-import { applyDamage } from "./combat";
-import { pushEvent } from "./eventLog";
+import type { WorldState } from "../../types/WorldState";
+import type { Enemy } from "../../types/Enemy";
+import type { PathNode } from "../../types/Pathfinding";
+import { manhattanDistance } from "../pathfinding/manhattan";
+import { pushEvent } from "../eventLog";
+import type { EntityBase } from "../../types/EntityBase";
+import { directionFromTo } from "../../../utils/distanceUtils";
 
-function directionFromTo(
-  r0: number,
-  c0: number,
-  r1: number,
-  c1: number
-): Direction | null {
-  console.log(`r0: ${r0}, c0: ${c0}, r1: ${r1}, c1: ${c1}`);
-  const dr = r1 - r0;
-  const dc = c1 - c0;
+function pickClosestTarget(world: WorldState, enemy: Enemy): EntityBase | null {
+  let closestEntity: { entity: EntityBase; distance: number } | null = null;
 
-  if (dr === -1 && dc === 0) return DIRECTIONS.North;
-  if (dr === 1 && dc === 0) return DIRECTIONS.South;
-  if (dr === 0 && dc === 1) return DIRECTIONS.East;
-  if (dr === 0 && dc === -1) return DIRECTIONS.West;
+  for (const entity of [...Object.values(world.neutrals), world.player]) {
+    if (entity.hp <= 0) continue;
+    const entityDistance = manhattanDistance(
+      enemy.r,
+      enemy.c,
+      entity.r,
+      entity.c,
+    );
+    if (entityDistance > enemy.visionRadius) continue;
+    if (!closestEntity || entityDistance < closestEntity.distance)
+      closestEntity = { entity, distance: entityDistance };
+  }
 
-  return null;
+  return closestEntity?.entity ?? null;
 }
 
 function clearPlan(enemy: Enemy) {
@@ -34,27 +35,33 @@ function clearPlan(enemy: Enemy) {
 }
 
 export function enemyAISystem(world: WorldState, dtMs: number) {
-  const player = world.player;
-
   for (const enemy of Object.values(world.enemies)) {
     enemy.thinkCooldownMs -= dtMs;
     if (enemy.thinkCooldownMs > 0) continue;
     if (enemy.targetR !== null && enemy.targetC !== null) continue;
     enemy.thinkCooldownMs = enemy.thinkIntervalMs;
 
-    const dist = manhattanDistance(enemy.r, enemy.c, player.r, player.c);
+    const targetEntity = pickClosestTarget(world, enemy);
+    if (!targetEntity) {
+      clearPlan(enemy);
+      enemy.targetEntityId = null;
+      continue;
+    }
+
+    const dist = manhattanDistance(
+      enemy.r,
+      enemy.c,
+      targetEntity.r,
+      targetEntity.c,
+    );
     if (dist === 1) {
       enemy.nextDirection = directionFromTo(
         enemy.r,
         enemy.c,
-        player.r,
-        player.c
+        targetEntity.r,
+        targetEntity.c,
       );
-      if (player.invulnerabilityMs <= 0) {
-        const damage = Math.max(1, enemy.attackPower);
-        applyDamage(world, player, damage);
-        player.invulnerabilityMs = 400;
-      }
+
       enemy.currentPath = null;
       enemy.pathIndex = 0;
       continue;
@@ -65,10 +72,10 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
     }
 
     enemy.isAggroed = true;
-    pushEvent(world, "bad", `${player.id} aggroed ${enemy.id}`);
+    pushEvent(world, "bad", `${targetEntity.id} aggroed ${enemy.id}`);
 
     const goalChanged =
-      enemy.pathGoalR !== player.r || enemy.pathGoalC !== player.c;
+      enemy.pathGoalR !== targetEntity.r || enemy.pathGoalC !== targetEntity.c;
     if (goalChanged) {
       clearPlan(enemy);
     }
@@ -81,8 +88,8 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
       const newPath = enemy.pathfinder(world, {
         startR: enemy.r,
         startC: enemy.c,
-        goalR: player.r,
-        goalC: player.c,
+        goalR: targetEntity.r,
+        goalC: targetEntity.c,
         visionCenterR: enemy.r,
         visionCenterC: enemy.c,
         visionRadius: enemy.visionRadius,
@@ -97,8 +104,8 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
 
       enemy.currentPath = newPath;
       enemy.pathIndex = 1; // 0 is current tile, 1 is next step
-      enemy.pathGoalR = player.r;
-      enemy.pathGoalC = player.c;
+      enemy.pathGoalR = targetEntity.r;
+      enemy.pathGoalC = targetEntity.c;
     }
 
     const next: PathNode | undefined = enemy.currentPath?.[enemy.pathIndex];

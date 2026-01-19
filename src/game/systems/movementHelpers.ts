@@ -18,7 +18,7 @@ type MoveEntity = {
   facing: Direction;
 };
 
-function inBounds(world: WorldState, r: number, c: number) {
+export function inBounds(world: WorldState, r: number, c: number) {
   return (
     r >= 0 &&
     c >= 0 &&

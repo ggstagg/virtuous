@@ -22,7 +22,7 @@ function placeWall(grid: Grid, r: number, c: number) {
 
 export function createOverworldSection1Layout(): Tile[][] {
   const grid: Grid = Array.from({ length: OVERWORLD_SECTION_1_ROWS }, () =>
-    Array.from({ length: OVERWORLD_SECTION_1_COLS }, () => makeTile("floor"))
+    Array.from({ length: OVERWORLD_SECTION_1_COLS }, () => makeTile("floor")),
   );
 
   // outer walls
@@ -37,7 +37,7 @@ export function createOverworldSection1Layout(): Tile[][] {
   }
 
   for (let r = 1; r < OVERWORLD_SECTION_1_ROWS - 1; r++)
-    if (r !== 20) placeWall(grid, r, 9);
+    if (r !== 20 && r !== 4) placeWall(grid, r, 9);
 
   for (let c = 1; c < OVERWORLD_SECTION_1_COLS - 1; c++) {
     if (c === 5 || c === 24) continue;

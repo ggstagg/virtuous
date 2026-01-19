@@ -1,5 +1,5 @@
-import type { Item } from "../types/Item";
-import type { WorldState } from "../types/WorldState";
+import type { Item } from "../../types/Item";
+import type { WorldState } from "../../types/WorldState";
 
 let itemCounter = 0;
 

@@ -1,6 +1,6 @@
-import type { Item } from "../types/Item";
-import type { WorldState } from "../types/WorldState";
-import { pushEvent } from "./eventLog";
+import type { Item } from "../../types/Item";
+import type { WorldState } from "../../types/WorldState";
+import { pushEvent } from ".././eventLog";
 
 function giveItemToPlayer(world: WorldState, item: Item) {
   const player = world.player;

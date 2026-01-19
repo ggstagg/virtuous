@@ -34,4 +34,6 @@ export interface EntityBase {
   visionRadius: number;
 
   statusEffects: StatusEffect[];
+  invulnerabilityMs: number;
+  maxInvulnerabilityMs: number;
 }

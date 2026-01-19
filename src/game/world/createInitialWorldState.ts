@@ -1,5 +1,8 @@
-// import { spawnGold } from "../systems/itemHelpers";
-import { spawnFood, spawnGold, spawnKey } from "../systems/itemHelpers";
+import {
+  spawnFood,
+  spawnGold,
+  spawnKey,
+} from "../systems/itemSystems/itemHelpers";
 import type { Enemy } from "../types/Enemy";
 import type { WorldState } from "../types/WorldState";
 import { createDefaultEnemy } from "./createDefaultEnemy";

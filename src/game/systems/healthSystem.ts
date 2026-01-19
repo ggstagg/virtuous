@@ -5,7 +5,13 @@ export function healthSystem(world: WorldState, dtMs: number) {
 
   const player = world.player;
 
-  player.invulnerabilityMs = Math.max(0, player.invulnerabilityMs - dtMs);
+  for (const entity of [
+    player,
+    ...Object.values(world.neutrals),
+    ...Object.values(world.enemies),
+  ]) {
+    entity.invulnerabilityMs = Math.max(0, entity.invulnerabilityMs - dtMs);
+  }
 
   if (player.hp <= 0) {
     player.hp = 0;

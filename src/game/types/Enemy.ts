@@ -8,6 +8,9 @@ export interface Enemy extends EntityBase {
   thinkCooldownMs: number;
   thinkIntervalMs: number;
 
+  attackCooldownMs: number;
+  attackIntervalMs: number;
+
   targetEntityId: string | null;
   nextDirection: Direction | null;
 

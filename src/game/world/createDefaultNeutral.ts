@@ -8,7 +8,7 @@ export function createDefaultNeutral(
   r: number,
   c: number,
   neutralType: NeutralEntityType = "villager",
-  socialGroup: SocialGroup = "villager"
+  socialGroup: SocialGroup = "villager",
 ): Neutral {
   const statusEffects: StatusEffect[] = [];
 
@@ -16,8 +16,8 @@ export function createDefaultNeutral(
     id,
     r,
     c,
-    hp: 5,
-    maxHp: 5,
+    hp: 5000,
+    maxHp: 5000,
     attackPower: 0,
     defensePower: 0,
 
@@ -29,8 +29,8 @@ export function createDefaultNeutral(
     startR: r,
     startC: c,
 
-    moveCooldownMs: 350,
-    moveDurationMs: 350,
+    moveCooldownMs: 300,
+    moveDurationMs: 300,
     moveProgressMs: 0,
 
     gold: 0,
@@ -43,6 +43,8 @@ export function createDefaultNeutral(
 
     visionRadius: 4,
     statusEffects,
+    invulnerabilityMs: 0,
+    maxInvulnerabilityMs: 300,
 
     socialGroup,
 
@@ -52,7 +54,7 @@ export function createDefaultNeutral(
     neutralEntityType: neutralType,
 
     thinkCooldownMs: 0,
-    thinkIntervalMs: 600,
+    thinkIntervalMs: 200,
     nextDirection: null,
   };
 }

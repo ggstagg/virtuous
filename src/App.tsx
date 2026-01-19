@@ -98,7 +98,7 @@ function App() {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/15 to-black/85" />{" "}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/15 to-black/85" />
       <div className="relative z-10 h-dvh w-screen flex items-center justify-center p-6">
         <div
           className="h-dvh w-screen flex items-center justify-center"

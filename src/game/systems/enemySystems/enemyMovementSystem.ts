@@ -1,6 +1,6 @@
-import type { Enemy } from "../types/Enemy";
-import type { WorldState } from "../types/WorldState";
-import { stepEntityMovement } from "./movementHelpers";
+import type { Enemy } from "../../types/Enemy";
+import type { WorldState } from "../../types/WorldState";
+import { stepEntityMovement } from "../movementHelpers";
 
 function clearPlan(enemy: Enemy) {
   enemy.currentPath = null;

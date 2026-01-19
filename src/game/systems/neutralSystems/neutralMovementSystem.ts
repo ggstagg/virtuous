@@ -1,5 +1,5 @@
-import type { WorldState } from "../types/WorldState";
-import { stepEntityMovement } from "./movementHelpers";
+import type { WorldState } from "../../types/WorldState";
+import { stepEntityMovement } from "../movementHelpers";
 
 export function neutralMovementSystem(world: WorldState, dtMs: number) {
   for (const neutral of Object.values(world.neutrals)) {
