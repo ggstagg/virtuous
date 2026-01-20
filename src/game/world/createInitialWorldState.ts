@@ -4,6 +4,7 @@ import {
   spawnKey,
 } from "../systems/itemSystems/itemHelpers";
 import type { Enemy } from "../types/Enemy";
+import type { Neutral } from "../types/Neutral";
 import type { WorldState } from "../types/WorldState";
 import { createDefaultEnemy } from "./createDefaultEnemy";
 import { createDefaultNeutral } from "./createDefaultNeutral";
@@ -23,10 +24,14 @@ export function createInitialWorldState(): WorldState {
   const enemy2: Enemy = createDefaultEnemy("enemy-2", 25, 25);
   const enemyList = [enemy1, enemy2];
 
-  const neutrals = {
-    neutral1: createDefaultNeutral("n1", 6, 20, "villager"),
-    neutral2: createDefaultNeutral("n2", 3, 40, "maiden"),
-  };
+  const neutral1: Neutral = createDefaultNeutral(
+    "neutral-1",
+    6,
+    20,
+    "villager",
+  );
+  const neutral2: Neutral = createDefaultNeutral("neutral-2", 3, 40, "maiden");
+  const neutralList = [neutral1, neutral2];
 
   const seed = 12345;
 
@@ -51,9 +56,8 @@ export function createInitialWorldState(): WorldState {
     initialWorldState.grid[enemy.r][enemy.c].entityId = enemy.id;
   }
 
-  initialWorldState.neutrals = neutrals;
-
-  for (const neutral of Object.values(neutrals)) {
+  for (const neutral of neutralList) {
+    initialWorldState.neutrals[neutral.id] = neutral;
     initialWorldState.grid[neutral.r][neutral.c].entityId = neutral.id;
   }
 

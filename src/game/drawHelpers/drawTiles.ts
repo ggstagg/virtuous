@@ -6,7 +6,7 @@ export function drawTiles(
   ctx: CanvasRenderingContext2D,
   rows: number,
   cols: number,
-  world: WorldState
+  world: WorldState,
 ) {
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
@@ -27,22 +27,31 @@ export function drawTiles(
       // item (simple circle)
       if (tile.item) {
         ctx.beginPath();
-        switch (tile.item.type) {
-          case "gold":
-            ctx.fillStyle = "#d7b400";
+        switch (tile.item.kind) {
+          case "item":
+            switch (tile.item.type) {
+              case "gold":
+                ctx.fillStyle = "#d7b400";
+                break;
+              case "food":
+                ctx.fillStyle = "#6ad06a";
+                break;
+              case "key":
+                ctx.fillStyle = "}#ecececff";
+                break;
+            }
             break;
-          case "food":
-            ctx.fillStyle = "#6ad06a";
+          case "bundle":
+            ctx.fillStyle = "#27230e";
             break;
-          case "key":
-            ctx.fillStyle = "#ecececff";
         }
+
         ctx.arc(
           x + TILE_SIZE / 2,
           y + TILE_SIZE / 2,
           Math.max(3, TILE_SIZE * 0.18),
           0,
-          Math.PI * 2
+          Math.PI * 2,
         );
         ctx.fill();
       }

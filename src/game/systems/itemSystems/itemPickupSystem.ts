@@ -1,3 +1,4 @@
+import type { Bundle } from "../../types/Bundle";
 import type { Item } from "../../types/Item";
 import type { WorldState } from "../../types/WorldState";
 import { pushEvent } from ".././eventLog";
@@ -23,7 +24,7 @@ function giveItemToPlayer(world: WorldState, item: Item) {
       pushEvent(
         world,
         "good",
-        `${player.id} picked up ${item.name ?? "nameless key"}.`
+        `${player.id} picked up ${item.name ?? "nameless key"}.`,
       );
       return;
     }
@@ -32,11 +33,25 @@ function giveItemToPlayer(world: WorldState, item: Item) {
       pushEvent(
         world,
         "good",
-        `${player.id} picked up ${item.name ?? "nameless weapon"}.`
+        `${player.id} picked up ${item.name ?? "nameless weapon"}.`,
       );
       return;
     }
   }
+}
+
+function giveBundleToPlayer(world: WorldState, bundle: Bundle) {
+  const player = world.player;
+
+  if (bundle.gold) {
+    player.gold += bundle.gold;
+    pushEvent(world, "good", `${player.id} looted ${bundle.gold} gold.`);
+  }
+  if (bundle.food) {
+    player.food += bundle.food;
+    pushEvent(world, "good", `${player.id} looted ${bundle.food} food.`);
+  }
+  for (const item of bundle.items) giveItemToPlayer(world, item);
 }
 
 export function itemPickupSystem(world: WorldState) {
@@ -45,6 +60,15 @@ export function itemPickupSystem(world: WorldState) {
 
   if (!playerTile || !playerTile.item) return;
 
-  giveItemToPlayer(world, playerTile.item);
+  const loot = playerTile.item;
+
+  switch (loot.kind) {
+    case "bundle":
+      giveBundleToPlayer(world, loot);
+      break;
+    case "item":
+      giveItemToPlayer(world, loot);
+      break;
+  }
   playerTile.item = null;
 }

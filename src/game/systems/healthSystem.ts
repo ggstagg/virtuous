@@ -13,9 +13,4 @@ export function healthSystem(world: WorldState, dtMs: number) {
     entity.invulnerabilityMs = Math.max(0, entity.invulnerabilityMs - dtMs);
   }
 
-  if (player.hp <= 0) {
-    player.hp = 0;
-    world.gameOver = true;
-    return;
-  }
 }

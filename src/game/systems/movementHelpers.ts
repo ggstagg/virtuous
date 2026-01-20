@@ -37,7 +37,7 @@ export function stepEntityMovement(
   world: WorldState,
   entity: MoveEntity,
   dtMs: number,
-  getDirection: () => Direction | null
+  getDirection: () => Direction | null,
 ): boolean {
   entity.moveCooldownMs = Math.max(0, entity.moveCooldownMs - dtMs);
 
@@ -45,7 +45,7 @@ export function stepEntityMovement(
   if (entity.targetR !== null && entity.targetC !== null) {
     entity.moveProgressMs = Math.min(
       entity.moveDurationMs,
-      entity.moveProgressMs + dtMs
+      entity.moveProgressMs + dtMs,
     );
 
     if (entity.moveProgressMs >= entity.moveDurationMs) {
@@ -72,8 +72,14 @@ export function stepEntityMovement(
 
   entity.facing = direction;
 
-  if (!inBounds(world, nextR, nextC)) return false;
-  if (!isWalkable(world, nextR, nextC)) return false;
+  if (!inBounds(world, nextR, nextC)) {
+    console.log("out of bounds");
+    return false;
+  }
+  if (!isWalkable(world, nextR, nextC)) {
+    console.log("not walkable");
+    return false;
+  }
 
   const fromR = entity.r;
   const fromC = entity.c;

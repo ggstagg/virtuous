@@ -16,8 +16,8 @@ export function createDefaultNeutral(
     id,
     r,
     c,
-    hp: 5000,
-    maxHp: 5000,
+    hp: 10,
+    maxHp: 10,
     attackPower: 0,
     defensePower: 0,
 
@@ -33,8 +33,8 @@ export function createDefaultNeutral(
     moveDurationMs: 300,
     moveProgressMs: 0,
 
-    gold: 0,
-    food: 0,
+    gold: 10,
+    food: 30,
     inventory: [],
 
     isAggroed: false,

@@ -12,7 +12,7 @@ export function placeItemIfFree(
   world: WorldState,
   r: number,
   c: number,
-  item: Item
+  item: Item,
 ): boolean {
   const tile = world.grid[r]?.[c];
 
@@ -26,11 +26,12 @@ export function spawnGold(
   world: WorldState,
   r: number,
   c: number,
-  quantity = 1
+  quantity = 1,
 ): boolean {
   const itemId: string = newItemId("gold");
   const item: Item = {
     id: itemId,
+    kind: "item",
     type: "gold",
     quantity,
   };
@@ -42,11 +43,12 @@ export function spawnFood(
   world: WorldState,
   r: number,
   c: number,
-  quantity = 1
+  quantity = 1,
 ): boolean {
   const itemId: string = newItemId("food");
   const item: Item = {
     id: itemId,
+    kind: "item",
     type: "food",
     quantity,
   };
@@ -58,11 +60,12 @@ export function spawnKey(
   world: WorldState,
   r: number,
   c: number,
-  keyId: string
+  keyId: string,
 ): boolean {
   const itemId: string = newItemId("key");
   const item: Item = {
     id: itemId,
+    kind: "item",
     type: "key",
     keyId,
   };
