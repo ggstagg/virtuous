@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createInitialWorldState } from "./game/world/createInitialWorldState";
 import {
   GameCanvas,
@@ -18,11 +18,17 @@ import { cameraSystem, createCamera } from "./game/systems/cameraSystem";
 import { TILE_SIZE } from "./game/constants/viewConstants";
 import { computeLayout } from "./computeViewSize";
 import { GameHUD } from "./game/components/GameHUD";
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+} from "./game/save/localStorage";
+import { pushEvent } from "./game/systems/eventLog";
 
 const SIM_TICK_MS = 10;
 
 function App() {
-  // const [{ viewW, viewH }, setViewSize] = useState(() => computeViewSize());
+  const [uiVersion, setUIVersion] = useState(0);
+
   const [layout, setLayout] = useState(() => computeLayout());
 
   const worldRef = useRef<WorldState>(createInitialWorldState());
@@ -34,8 +40,29 @@ function App() {
   const loopStartedRef = useRef(false);
 
   const [canvasHandle, setCanvasHandle] = useState<GameCanvasHandle | null>(
-    null
+    null,
   );
+
+  const saveNow = useCallback(() => {
+    console.log("saving to local storage");
+    saveToLocalStorage(worldRef.current);
+    pushEvent(worldRef.current, "info", "Game saved.");
+    setUIVersion((v) => v + 1);
+  }, []);
+
+  const loadNow = useCallback(() => {
+    console.log("laoding from local storage");
+    const loaded = loadFromLocalStorage();
+    if (!loaded) {
+      pushEvent(worldRef.current, "info", "No save found.");
+      setUIVersion((v) => v + 1);
+      return;
+    }
+
+    worldRef.current = loaded;
+    pushEvent(worldRef.current, "info", "Game loaded.");
+    setUIVersion((v) => v + 1);
+  }, []);
 
   function resetGame() {
     worldRef.current = createInitialWorldState();
@@ -83,11 +110,23 @@ function App() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === "r") resetGame();
+      const key = e.key.toLowerCase();
+
+      if (key === "r") resetGame();
+
+      if ((e.ctrlKey || e.metaKey) && key === "s") {
+        e.preventDefault();
+        saveNow();
+      }
+
+      if ((e.ctrlKey || e.metaKey) && key === "l") {
+        e.preventDefault();
+        loadNow();
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [resetGame, saveNow, loadNow]);
 
   return (
     <div
@@ -125,6 +164,7 @@ function App() {
                 worldRef={worldRef}
                 sidebarW={layout.sidebarW}
                 viewH={layout.viewH}
+                uiVersion={uiVersion}
               />
             </div>
           </div>

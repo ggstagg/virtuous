@@ -22,10 +22,12 @@ export function GameHUD({
   worldRef,
   sidebarW,
   viewH,
+  uiVersion,
 }: {
   worldRef: WorldRef;
   sidebarW: number;
   viewH: number;
+  uiVersion: number;
 }) {
   const [snap, setSnap] = useState<HudSnapshot>({
     hp: 0,
@@ -38,6 +40,7 @@ export function GameHUD({
   });
 
   useEffect(() => {
+    console.log(uiVersion);
     let raf = 0;
 
     const tick = () => {
