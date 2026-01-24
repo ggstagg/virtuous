@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createInitialWorldState } from "./game/world/createInitialWorldState";
 import {
   GameCanvas,
@@ -19,10 +19,12 @@ import { TILE_SIZE } from "./game/constants/viewConstants";
 import { computeLayout } from "./computeViewSize";
 import { GameHUD } from "./game/components/GameHUD";
 import {
+  hasSave,
   loadFromLocalStorage,
   saveToLocalStorage,
 } from "./game/save/localStorage";
 import { pushEvent } from "./game/systems/eventLog";
+import StartMenu from "./game/components/StartMenu";
 
 const SIM_TICK_MS = 10;
 
@@ -33,6 +35,7 @@ function App() {
 
   const worldRef = useRef<WorldState>(createInitialWorldState());
   const inputRef = useRef<InputState>(createInputState());
+  const [mode, setMode] = useState<"menu" | "game">("menu");
 
   const cameraRef = useRef<Camera>(createCamera(layout.viewW, layout.viewH));
 
@@ -42,6 +45,7 @@ function App() {
   const [canvasHandle, setCanvasHandle] = useState<GameCanvasHandle | null>(
     null,
   );
+  const canContinue = useMemo(() => hasSave(), [uiVersion]);
 
   const saveNow = useCallback(() => {
     console.log("saving to local storage");
@@ -64,10 +68,10 @@ function App() {
     setUIVersion((v) => v + 1);
   }, []);
 
-  function resetGame() {
+  const resetGame = useCallback(() => {
     worldRef.current = createInitialWorldState();
     cameraRef.current = createCamera(layout.viewW, layout.viewH);
-  }
+  }, [layout]);
 
   useEffect(() => {
     const detach = attachKeyboard(inputRef.current);
@@ -75,6 +79,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (mode !== "game") return;
     if (!canvasHandle) return;
     if (loopHandleRef.current) return;
 
@@ -100,7 +105,7 @@ function App() {
       loopHandleRef.current = null;
       loopStartedRef.current = false;
     };
-  }, [canvasHandle]);
+  }, [canvasHandle, mode]);
 
   useEffect(() => {
     const onResize = () => setLayout(computeLayout());
@@ -128,6 +133,24 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [resetGame, saveNow, loadNow]);
 
+  const startGame = useCallback(() => {
+    worldRef.current = createInitialWorldState();
+    pushEvent(worldRef.current, "info", "New game started.");
+    setUIVersion((v) => v + 1);
+    setMode("game");
+  }, []);
+
+  const continueGame = useCallback(() => {
+    const loaded = loadFromLocalStorage();
+    if (!loaded) {
+      setUIVersion((v) => v + 1);
+      return;
+    }
+
+    loadNow();
+    setMode("game");
+  }, []);
+
   return (
     <div
       className="w-screen min-h-dvh overflow-hidden"
@@ -143,6 +166,13 @@ function App() {
           className="h-dvh w-screen flex items-center justify-center"
           style={{ padding: layout.framePad }}
         >
+          {mode === "menu" && (
+            <StartMenu
+              canContinue={canContinue}
+              onContinue={continueGame}
+              onStart={startGame}
+            />
+          )}
           <div
             className="bg-zinc-950 rounded-xl shadow-2xl"
             style={{ padding: layout.framePad }}
