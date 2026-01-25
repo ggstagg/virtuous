@@ -2,10 +2,10 @@ import { TILE_SIZE } from "../constants/viewConstants";
 import type { EntityBase } from "../types/EntityBase";
 import { drawDirectionArrow } from "./drawDirectionArrow";
 
-export function drawEntity(
+export function debugDrawEntity(
   ctx: CanvasRenderingContext2D,
   entity: EntityBase,
-  color: string
+  color: string,
 ) {
   let drawR = entity.r;
   let drawC = entity.c;

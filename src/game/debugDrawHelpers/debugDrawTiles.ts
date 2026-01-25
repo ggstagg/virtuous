@@ -2,7 +2,7 @@ import { TILE_SIZE } from "../constants/viewConstants";
 import type { Tile } from "../types/Tile";
 import type { WorldState } from "../types/WorldState";
 
-export function drawTiles(
+export function debugDrawTiles(
   ctx: CanvasRenderingContext2D,
   rows: number,
   cols: number,

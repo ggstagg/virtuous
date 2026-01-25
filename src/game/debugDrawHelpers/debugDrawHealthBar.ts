@@ -1,4 +1,4 @@
-export function drawHealthBar(
+export function debugDrawHealthBar(
   ctx: CanvasRenderingContext2D,
   hp: number,
   maxHp: number,

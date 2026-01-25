@@ -18,4 +18,6 @@ export interface WorldState {
   eventLog: GameEvent[];
 
   gameOver: boolean;
+
+  renderMode: "debug" | "game";
 }

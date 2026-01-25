@@ -2,10 +2,10 @@ import { TILE_SIZE } from "../constants/viewConstants";
 import type { Enemy } from "../types/Enemy";
 import type { WorldState } from "../types/WorldState";
 
-export function drawEnemyVision(
+export function debugDrawEnemyVision(
   ctx: CanvasRenderingContext2D,
   world: WorldState,
-  enemy: Enemy
+  enemy: Enemy,
 ) {
   const R = enemy.visionRadius;
 

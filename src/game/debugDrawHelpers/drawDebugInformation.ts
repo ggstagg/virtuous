@@ -1,10 +1,10 @@
 import type { Camera } from "../types/Camera";
 import type { WorldState } from "../types/WorldState";
 
-export function drawDebug(
+export function drawDebugInformation(
   ctx: CanvasRenderingContext2D,
   world: WorldState,
-  camera: Camera
+  camera: Camera,
 ) {
   ctx.fillStyle = "white";
   ctx.font = "12px sans-serif";

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { Camera } from "../types/Camera";
-import { drawWorld } from "../drawHelpers/drawWorld";
+import { drawWorld } from "../debugDrawHelpers/drawWorld";
 
 export interface GameCanvasHandle {
   render: (camera: Camera) => void;
@@ -53,11 +53,5 @@ export function GameCanvas({
     });
   }, [onReady, worldRef, width, height]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-
-      style={{ display: "block" }}
-    />
-  );
+  return <canvas ref={canvasRef} style={{ display: "block" }} />;
 }

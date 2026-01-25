@@ -1,4 +1,4 @@
-import { getColorFromTailwind } from "../drawHelpers/color";
+import { getColorFromTailwind } from "../debugDrawHelpers/color";
 
 export const COLORS = {
   player: getColorFromTailwind("--color-player"),

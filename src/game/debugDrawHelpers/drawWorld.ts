@@ -1,7 +1,7 @@
-import { drawGameOver } from "../drawHelpers/drawGameOver";
-import { drawDebug } from "../drawHelpers/drawDebug";
-import { drawTiles } from "../drawHelpers/drawTiles";
-import { drawEntities } from "../drawHelpers/drawEntities";
+import { drawGameOver } from "./drawGameOver";
+import { drawDebugInformation } from "./drawDebugInformation";
+import { debugDrawTiles } from "./debugDrawTiles";
+import { debugDrawEntities } from "./debugDrawEntities";
 import type { WorldState } from "../types/WorldState";
 import type { Camera } from "../types/Camera";
 
@@ -28,13 +28,17 @@ export function drawWorld(
   const rows = world.grid.length;
   const cols = world.grid[0]?.length ?? 0;
 
-  drawTiles(ctx, rows, cols, world);
-  drawEntities(ctx, world);
+  if (world.renderMode === "debug") {
+    debugDrawTiles(ctx, rows, cols, world);
+    debugDrawEntities(ctx, world);
+  } else {
+    console.log("drawing sprites");
+  }
 
   ctx.restore();
 
   // drawHealthBar(ctx, world.player.hp, world.player.maxHp, width);
-  
+
   if (world.gameOver) drawGameOver(ctx, camera.viewW, camera.viewH);
-  drawDebug(ctx, world, camera);
+  drawDebugInformation(ctx, world, camera);
 }
