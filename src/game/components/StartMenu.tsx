@@ -8,9 +8,15 @@ const StartMenu = ({ canContinue, onStart, onContinue }: StartMenuProps) => {
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-black/60">
       <div className="w-[420px] max-w-[90vw] rounded-2xl border border-white/10 bg-slate-950/80 p-6 shadow-2xl">
-        <div className="text-xl font-semibold text-white">Virtuous</div>
+        <div className="text-5xl font-semibold text-white">Virtuous</div>
         <div className="mt-1 text-sm text-slate-300">
-          WASD or Arrow keys to move. Ctrl+S to save. Ctrl+L to load.
+          <div>Move: WASD / Arrow Keys</div>
+          <div>Attack: Spacebar / F</div>
+          <div>Zoom: V</div>
+          <div>Reset: R</div>
+          <div>Save: Ctrl/Command + S</div>
+          <div>Load: Ctrl/Command + L</div>
+          <div>Debug: Ctrl/Command + D</div>
         </div>
 
         <div className="mt-6 flex flex-col gap-3">

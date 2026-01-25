@@ -51,7 +51,6 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
         0,
         enemy.wanderCooldownMs - enemy.thinkIntervalMs,
       );
-      console.log(enemy.wanderCooldownMs);
       if (enemy.wanderCooldownMs > 0) {
         enemy.nextDirection = null;
         continue;
@@ -117,7 +116,6 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
         maxDepth: enemy.visionRadius,
         maxNodes: 500,
       });
-      console.log("new path: ", newPath);
 
       if (!newPath || newPath.length < 2) {
         enemy.targetEntityId = null;
@@ -126,7 +124,6 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
           0,
           enemy.wanderCooldownMs - enemy.thinkIntervalMs,
         );
-        console.log(enemy.wanderCooldownMs);
         if (enemy.wanderCooldownMs > 0) {
           enemy.nextDirection = null;
           continue;
@@ -151,10 +148,8 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
       clearPlan(enemy);
       continue;
     }
-    console.log("next: ", next);
 
     const dir = directionFromTo(enemy.r, enemy.c, next.r, next.c);
-    console.log("next direction: ", dir);
     if (!dir) {
       // path isn't adjacent or got invalidated by changes; recompute next think
       clearPlan(enemy);

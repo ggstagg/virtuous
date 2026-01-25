@@ -1,5 +1,5 @@
-import { TILE_SIZE } from "../constants/viewConstants";
-import type { EntityBase } from "../types/EntityBase";
+import { TILE_SIZE } from "../../constants/viewConstants";
+import type { EntityBase } from "../../types/EntityBase";
 import { drawDirectionArrow } from "./drawDirectionArrow";
 
 export function debugDrawEntity(

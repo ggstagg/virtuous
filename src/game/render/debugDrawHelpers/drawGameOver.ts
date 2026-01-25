@@ -1,7 +1,7 @@
 export function drawGameOver(
   ctx: CanvasRenderingContext2D,
   viewW: number,
-  viewH: number
+  viewH: number,
 ) {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);

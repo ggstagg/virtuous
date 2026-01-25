@@ -16,8 +16,8 @@ export function createDefaultPlayer(): Player {
     attackPower: 5,
     defensePower: 2,
 
-    facing: DIRECTIONS.South,
-    moveSpeed: 1,
+    facing: DIRECTIONS.East,
+    moveSpeed: 0.8,
     baseMovementDurationMs: 120,
 
     startR: 2,
@@ -25,6 +25,8 @@ export function createDefaultPlayer(): Player {
     targetR: null,
     targetC: null,
     moveProgressMs: 0,
+    animationFrame: 0,
+    animationTimeMs: 0,
 
     moveCooldownMs: 120,
     moveDurationMs: 120,

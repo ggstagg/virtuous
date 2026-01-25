@@ -76,7 +76,7 @@ export function GameHUD({
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [worldRef]);
+  }, [worldRef, uiVersion]);
 
   const hpPct = snap.maxHp <= 0 ? 0 : clamp(snap.hp / snap.maxHp, 0, 1);
 

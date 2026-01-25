@@ -19,4 +19,5 @@ export type SaveState = {
   neutrals: Record<string, Neutral>;
 
   grid: Array<Array<Omit<Tile, "entityId">>>;
+  renderMode: "game" | "debug";
 };

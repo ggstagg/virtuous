@@ -1,6 +1,6 @@
-import { TILE_SIZE } from "../constants/viewConstants";
-import type { Enemy } from "../types/Enemy";
-import type { WorldState } from "../types/WorldState";
+import { TILE_SIZE } from "../../constants/viewConstants";
+import type { Enemy } from "../../types/Enemy";
+import type { WorldState } from "../../types/WorldState";
 
 export function debugDrawEnemyVision(
   ctx: CanvasRenderingContext2D,

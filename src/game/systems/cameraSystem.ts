@@ -46,13 +46,18 @@ function getPlayerDrawPosPx(world: WorldState, tileSize: number) {
   };
 }
 
-export function createCamera(viewW: number, viewH: number): Camera {
+export function createCamera(
+  x: number,
+  y: number,
+  viewW: number,
+  viewH: number,
+): Camera {
   return {
-    x: 0,
-    y: 0,
+    x,
+    y,
     viewW,
     viewH,
-    zoom: 1,
+    zoom: 1.5,
     followHalfLifeMs: 150,
   };
 }
@@ -66,10 +71,11 @@ export function cameraSystem(
   const { tileSize } = params;
   const { worldW, worldH } = worldPixelSize(world, tileSize);
 
-  // Compute player's draw position in world pixels (use interpolation if moving)
+  // Compute player's draw position
   const { drawX, drawY } = getPlayerDrawPosPx(world, tileSize);
 
   if (params.input.functionKeys.has("v")) {
+    console.log("zooming");
     const i = ZOOMS.indexOf(camera.zoom);
     camera.zoom = ZOOMS[(i + 1) % ZOOMS.length];
   }
@@ -78,8 +84,8 @@ export function cameraSystem(
   const visibleH = camera.viewH / camera.zoom;
 
   // Target camera so player is centered
-  const targetX = drawX - camera.viewW / camera.zoom / 2;
-  const targetY = drawY - camera.viewH / camera.zoom / 2;
+  const targetX = drawX - visibleW / 2;
+  const targetY = drawY - visibleH / 2;
 
   if (camera.followHalfLifeMs <= 0) {
     camera.x = targetX;

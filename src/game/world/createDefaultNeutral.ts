@@ -24,7 +24,7 @@ export function createDefaultNeutral(
     defensePower: 0,
 
     facing: DIRECTIONS.South as Direction,
-    moveSpeed: 1,
+    moveSpeed: 0.9,
     baseMovementDurationMs: 250,
     targetR: null,
     targetC: null,
@@ -35,6 +35,8 @@ export function createDefaultNeutral(
     moveCooldownMs: 300,
     moveDurationMs: 300,
     moveProgressMs: 0,
+    animationFrame: 0,
+    animationTimeMs: 0,
 
     gold: 10,
     food: 30,

@@ -50,6 +50,7 @@ export function attachKeyboard(input: InputState): () => void {
       case "KeyF":
         input.attackPressed = true;
         break;
+        
       default:
         if (!e.repeat) input.functionKeys.add(e.key);
         break;

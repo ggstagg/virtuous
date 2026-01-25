@@ -14,6 +14,7 @@ export interface WorldState {
 
   tick: number;
   seed: number;
+  uiVersion: number;
 
   eventLog: GameEvent[];
 

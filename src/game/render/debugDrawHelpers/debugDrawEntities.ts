@@ -1,5 +1,5 @@
-import { COLORS } from "../constants/colorConstants";
-import type { WorldState } from "../types/WorldState";
+import { COLORS } from "../../constants/colorConstants";
+import type { WorldState } from "../../types/WorldState";
 import { debugDrawEnemyVision } from "./debugDrawEnemyVision";
 import { debugDrawEntity } from "./debugDrawEntity";
 

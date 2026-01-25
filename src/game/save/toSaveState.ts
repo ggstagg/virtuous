@@ -25,5 +25,6 @@ export function toSaveState(world: WorldState): SaveState {
     enemies,
     neutrals: world.neutrals,
     grid,
+    renderMode: world.renderMode,
   };
 }

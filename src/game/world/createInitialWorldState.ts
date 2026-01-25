@@ -45,10 +45,12 @@ export function createInitialWorldState(): WorldState {
 
     tick: 0,
     seed,
+    uiVersion: 0,
 
     eventLog: [],
 
     gameOver: false,
+    renderMode: "game",
   };
 
   for (const enemy of enemyList) {

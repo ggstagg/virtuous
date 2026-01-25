@@ -9,6 +9,6 @@ export interface Camera {
 
   zoom: number;
 
-  // smoothing (bigger number = floatier)
+  // smoothing
   followHalfLifeMs: number;
 }

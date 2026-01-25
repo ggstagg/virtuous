@@ -20,7 +20,6 @@ export function playerAttackSystem(
   }
 
   if (!consumeAttack(input)) return;
-  console.log("attack");
 
   const { dr, dc } = DirectionDelta[player.facing];
   const nextR = player.r + dr;

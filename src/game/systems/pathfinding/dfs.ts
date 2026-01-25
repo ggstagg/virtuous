@@ -100,12 +100,10 @@ export const dfsPathfinder: Pathfinder = (
   });
 
   if (!found) {
-    console.log("could NOT find a path");
     return null;
   }
 
   path.reverse();
 
-  console.log("Found a path: ", path);
   return found ? path : null;
 };

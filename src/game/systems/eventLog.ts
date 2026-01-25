@@ -6,7 +6,7 @@ const MAX_EVENTS = 20;
 export function pushEvent(
   world: WorldState,
   type: GameEventType,
-  text: string
+  text: string,
 ) {
   const e: GameEvent = {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -19,4 +19,5 @@ export function pushEvent(
   if (world.eventLog.length > MAX_EVENTS) {
     world.eventLog.splice(0, world.eventLog.length - MAX_EVENTS);
   }
+  world.uiVersion++;
 }

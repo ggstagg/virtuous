@@ -25,6 +25,10 @@ import {
 } from "./game/save/localStorage";
 import { pushEvent } from "./game/systems/eventLog";
 import StartMenu from "./game/components/StartMenu";
+import {
+  loadSpriteSheets,
+  type SpriteSheets,
+} from "./game/render/sprites/spriteSheet";
 
 const SIM_TICK_MS = 10;
 
@@ -36,8 +40,12 @@ function App() {
   const worldRef = useRef<WorldState>(createInitialWorldState());
   const inputRef = useRef<InputState>(createInputState());
   const [mode, setMode] = useState<"menu" | "game">("menu");
+  const [sprites, setSprites] = useState<SpriteSheets | null>(null);
+  const spritesRef = useRef<SpriteSheets | null>(null);
 
-  const cameraRef = useRef<Camera>(createCamera(layout.viewW, layout.viewH));
+  const cameraRef = useRef<Camera>(
+    createCamera(0, 0, layout.viewW, layout.viewH),
+  );
 
   const loopHandleRef = useRef<ReturnType<typeof startLoop> | null>(null);
   const loopStartedRef = useRef(false);
@@ -70,7 +78,15 @@ function App() {
 
   const resetGame = useCallback(() => {
     worldRef.current = createInitialWorldState();
-    cameraRef.current = createCamera(layout.viewW, layout.viewH);
+    console.log("player c: ", worldRef.current.player.c);
+    console.log("player r: ", worldRef.current.player.r);
+
+    cameraRef.current = createCamera(
+      worldRef.current.player.c,
+      worldRef.current.player.r,
+      layout.viewW,
+      layout.viewH,
+    );
   }, [layout]);
 
   useEffect(() => {
@@ -128,17 +144,44 @@ function App() {
         e.preventDefault();
         loadNow();
       }
+      if ((e.ctrlKey || e.metaKey) && key === "d") {
+        e.preventDefault();
+        worldRef.current.renderMode =
+          worldRef.current.renderMode === "debug" ? "game" : "debug";
+      }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [resetGame, saveNow, loadNow]);
 
+  useEffect(() => {
+    spritesRef.current = sprites;
+  }, [sprites]);
+
+  useEffect(() => {
+    cameraRef.current.viewH = layout.viewW;
+    cameraRef.current.viewW = layout.viewH;
+    cameraRef.current = createCamera(
+      worldRef.current.player.c,
+      worldRef.current.player.r,
+      layout.viewW,
+      layout.viewH,
+    );
+  }, [layout.viewW, layout.viewH]);
+
   const startGame = useCallback(() => {
     worldRef.current = createInitialWorldState();
+    cameraRef.current = createCamera(
+      worldRef.current.player.c,
+      worldRef.current.player.r,
+      layout.viewW,
+      layout.viewH,
+    );
+
     pushEvent(worldRef.current, "info", "New game started.");
     setUIVersion((v) => v + 1);
     setMode("game");
-  }, []);
+  }, [layout.viewH, layout.viewW]);
 
   const continueGame = useCallback(() => {
     const loaded = loadFromLocalStorage();
@@ -151,11 +194,25 @@ function App() {
     setMode("game");
   }, []);
 
+  useEffect(() => {
+    let alive = true;
+    loadSpriteSheets()
+      .then((spriteSheet) => {
+        if (alive) setSprites(spriteSheet);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <div
-      className="w-screen min-h-dvh overflow-hidden"
+      className="w-screen min-h-dvh overflow-hidden font-press-start"
       style={{
-        backgroundImage: `url(/dungeon-background-1.png)`,
+        backgroundImage: `url(/dungeon-background-4.png)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -163,7 +220,7 @@ function App() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/15 to-black/85" />
       <div className="relative z-10 h-dvh w-screen flex items-center justify-center p-6">
         <div
-          className="h-dvh w-screen flex items-center justify-center"
+          className="w-full flex items-center justify-center"
           style={{ padding: layout.framePad }}
         >
           {mode === "menu" && (
@@ -175,16 +232,24 @@ function App() {
           )}
           <div
             className="bg-zinc-950 rounded-xl shadow-2xl"
-            style={{ padding: layout.framePad }}
+            style={{
+              padding: layout.framePad,
+              maxWidth: "calc(100vw - 48px",
+              maxHeight: "calc(100dvh - 48px)",
+            }}
           >
             <div className="flex" style={{ gap: layout.gap }}>
               {/* Canvas */}
-              <div className="bg-black rounded-lg overflow-hidden">
+              <div
+                className="bg-black rounded-lg overflow-hidden flex-none"
+                style={{ width: layout.viewW, height: layout.viewH }}
+              >
                 {/* TODO: need to figure out how to update camera based on view availability */}
                 <GameCanvas
                   worldRef={worldRef}
                   width={layout.viewW}
                   height={layout.viewH}
+                  spritesRef={spritesRef}
                   onReady={setCanvasHandle}
                 />
               </div>

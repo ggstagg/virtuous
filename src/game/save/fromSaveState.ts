@@ -27,8 +27,10 @@ export function fromSaveState(saveState: SaveState): WorldState {
     neutrals: saveState.neutrals,
     tick: saveState.tick,
     seed: saveState.seed,
+    uiVersion: 0,
     eventLog: [],
     gameOver: saveState.gameOver,
+    renderMode: saveState.renderMode,
   };
 
   world.grid[world.player.r][world.player.c].entityId = world.player.id;

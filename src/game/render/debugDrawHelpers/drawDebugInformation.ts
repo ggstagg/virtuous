@@ -1,5 +1,5 @@
-import type { Camera } from "../types/Camera";
-import type { WorldState } from "../types/WorldState";
+import type { Camera } from "../../types/Camera";
+import type { WorldState } from "../../types/WorldState";
 
 export function drawDebugInformation(
   ctx: CanvasRenderingContext2D,

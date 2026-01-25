@@ -1,5 +1,6 @@
 import type { WorldState } from "../types/WorldState";
 import { DirectionDelta, type Direction } from "../types/Direction";
+import type { Entity } from "../types/EntityBase";
 
 type MoveEntity = {
   id: string;
@@ -47,7 +48,7 @@ function getStepDurationMs(entity: MoveEntity): number {
 
 export function stepEntityMovement(
   world: WorldState,
-  entity: MoveEntity,
+  entity: Entity,
   dtMs: number,
   getDirection: () => Direction | null,
 ): boolean {
@@ -66,6 +67,7 @@ export function stepEntityMovement(
       entity.targetR = null;
       entity.targetC = null;
       entity.moveProgressMs = 0;
+      entity.animationFrame = ((entity.animationFrame ?? 0) ^ 1) as 0 | 1;
     }
     return true;
   }

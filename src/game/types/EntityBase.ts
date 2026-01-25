@@ -24,6 +24,9 @@ export interface EntityBase {
   moveSpeed: number;
   baseMovementDurationMs: number;
 
+  animationTimeMs: number;
+  animationFrame: 0 | 1;
+
   targetR: number | null;
   targetC: number | null;
   startR: number;

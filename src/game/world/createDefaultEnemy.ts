@@ -18,8 +18,8 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
     defensePower: 0,
 
     facing: DIRECTIONS.South,
-    moveSpeed: 1.1,
-    baseMovementDurationMs: 150,
+    moveSpeed: 0.9,
+    baseMovementDurationMs: 200,
 
     targetR: null,
     targetC: null,
@@ -28,8 +28,10 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
     startC: c,
 
     moveCooldownMs: 0,
-    moveDurationMs: 150,
+    moveDurationMs: 200,
     moveProgressMs: 0,
+    animationFrame: 0,
+    animationTimeMs: 0,
 
     gold: 0,
     food: 0,
@@ -59,8 +61,8 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
     targetEntityId: "test-player",
     nextDirection: null,
 
-    wanderCooldownMs: 200,
-    wanderIntervalMs: 200,
+    wanderCooldownMs: 300,
+    wanderIntervalMs: 300,
     wanderDirection: null,
 
     pathfinder: bfsPathfinder,

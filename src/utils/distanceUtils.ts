@@ -6,7 +6,6 @@ export function directionFromTo(
   r1: number,
   c1: number,
 ): Direction | null {
-  console.log(`r0: ${r0}, c0: ${c0}, r1: ${r1}, c1: ${c1}`);
   const dr = r1 - r0;
   const dc = c1 - c0;
 

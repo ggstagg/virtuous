@@ -1,6 +1,6 @@
-import { TILE_SIZE } from "../constants/viewConstants";
-import type { Tile } from "../types/Tile";
-import type { WorldState } from "../types/WorldState";
+import { TILE_SIZE } from "../../constants/viewConstants";
+import type { Tile } from "../../types/Tile";
+import type { WorldState } from "../../types/WorldState";
 
 export function debugDrawTiles(
   ctx: CanvasRenderingContext2D,
@@ -21,8 +21,6 @@ export function debugDrawTiles(
         ctx.fillStyle = "#1a1a1a";
       }
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-
-      // grid lines
 
       // item (simple circle)
       if (tile.item) {
