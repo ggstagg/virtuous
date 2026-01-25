@@ -14,6 +14,10 @@ export interface Enemy extends EntityBase {
   targetEntityId: string | null;
   nextDirection: Direction | null;
 
+  wanderCooldownMs: number;
+  wanderIntervalMs: number;
+  wanderDirection: Direction | null;
+
   pathfinder: Pathfinder;
   currentPath: { r: number; c: number }[] | null;
   pathIndex: number;

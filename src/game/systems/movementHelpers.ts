@@ -11,6 +11,9 @@ type MoveEntity = {
   targetR: number | null;
   targetC: number | null;
 
+  moveSpeed: number;
+  baseMovementDurationMs: number;
+
   moveCooldownMs: number;
   moveDurationMs: number;
   moveProgressMs: number;
@@ -32,7 +35,16 @@ function isWalkable(world: WorldState, r: number, c: number) {
   return tile.isWalkable && tile.entityId === null;
 }
 
-// if currently interpolating, advance progress and finish move when done
+function clamp(value: number, lo: number, hi: number) {
+  return Math.max(lo, Math.min(hi, value));
+}
+
+function getStepDurationMs(entity: MoveEntity): number {
+  const speed = Math.max(0.05, entity.moveSpeed || 0);
+  const base = Math.max(1, entity.baseMovementDurationMs || 1);
+  return clamp(base / speed, 16, 1000);
+}
+
 export function stepEntityMovement(
   world: WorldState,
   entity: MoveEntity,
@@ -43,13 +55,11 @@ export function stepEntityMovement(
 
   // If currently interpolating, advance progress and finish move when done
   if (entity.targetR !== null && entity.targetC !== null) {
-    entity.moveProgressMs = Math.min(
-      entity.moveDurationMs,
-      entity.moveProgressMs + dtMs,
-    );
+    const stepMs = Math.max(1, entity.moveDurationMs || 1);
+
+    entity.moveProgressMs = Math.min(stepMs, entity.moveProgressMs + dtMs);
 
     if (entity.moveProgressMs >= entity.moveDurationMs) {
-      // Commit logical position; occupancy was already handled at move start
       entity.startR = entity.r;
       entity.startC = entity.c;
 
@@ -96,13 +106,17 @@ export function stepEntityMovement(
   entity.startR = fromR;
   entity.startC = fromC;
 
-  entity.r = nextR;
-  entity.c = nextC;
-
   entity.targetR = nextR;
   entity.targetC = nextC;
+
+  entity.r = entity.targetR;
+  entity.c = entity.targetC;
+
   entity.moveProgressMs = 0;
 
-  entity.moveCooldownMs = entity.moveDurationMs;
+  const stepMs = getStepDurationMs(entity);
+  entity.moveDurationMs = stepMs;
+  entity.moveCooldownMs = stepMs;
+
   return true;
 }

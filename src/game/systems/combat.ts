@@ -5,20 +5,27 @@ import { pushEvent } from "./eventLog";
 export function applyDamage(
   world: WorldState,
   target: EntityBase,
+  source: EntityBase,
   damage: number,
 ) {
-  if (target.invulnerabilityMs <= 0) {
-    const prevHp = target.hp;
-    target.hp = Math.max(0, target.hp - damage);
+  if (target.invulnerabilityMs > 0) return;
 
-    const dealt = prevHp - target.hp;
-    if (dealt > 0) {
-      pushEvent(world, "bad", `${target.id} took ${dealt} damage`);
-    }
+  const prevHp = target.hp;
+  target.hp = Math.max(0, target.hp - damage);
 
-    if (target.hp === 0) {
-      pushEvent(world, "bad", `${target.id} died`);
-    }
-    target.invulnerabilityMs = target.maxInvulnerabilityMs;
+  const dealt = prevHp - target.hp;
+  if (dealt <= 0) return;
+
+  pushEvent(world, "bad", `${target.id} took ${dealt} damage`);
+
+  if (target.kind === "neutral") {
+    target.isScared = true;
+    target.attackedByEntityId = source.id;
+    target.scaredCooldownMs = target.scaredIntervalMs;
   }
+
+  if (target.hp <= 0) {
+    pushEvent(world, "bad", `${target.id} died`);
+  }
+  target.invulnerabilityMs = target.maxInvulnerabilityMs;
 }

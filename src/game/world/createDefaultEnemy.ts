@@ -8,6 +8,7 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
 
   return {
     id,
+    kind: "enemy",
     r,
     c,
 
@@ -17,15 +18,17 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
     defensePower: 0,
 
     facing: DIRECTIONS.South,
-    moveSpeed: 0.8,
+    moveSpeed: 1.1,
+    baseMovementDurationMs: 150,
+
     targetR: null,
     targetC: null,
 
     startR: r,
     startC: c,
 
-    moveCooldownMs: 200,
-    moveDurationMs: 200,
+    moveCooldownMs: 0,
+    moveDurationMs: 150,
     moveProgressMs: 0,
 
     gold: 0,
@@ -34,6 +37,9 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
 
     isAggroed: false,
     isScared: false,
+    attackedByEntityId: null,
+    scaredCooldownMs: 0,
+    scaredIntervalMs: 0,
     isIntimidated: false,
 
     visionRadius: 8,
@@ -45,13 +51,17 @@ export function createDefaultEnemy(id: string, r: number, c: number): Enemy {
     behaviorType: "chaser",
 
     thinkCooldownMs: 0,
-    thinkIntervalMs: 200,
+    thinkIntervalMs: 150,
 
     attackCooldownMs: 200,
     attackIntervalMs: 200,
 
     targetEntityId: "test-player",
     nextDirection: null,
+
+    wanderCooldownMs: 200,
+    wanderIntervalMs: 200,
+    wanderDirection: null,
 
     pathfinder: bfsPathfinder,
     currentPath: null,

@@ -37,7 +37,7 @@ export function drawTiles(
                 ctx.fillStyle = "#6ad06a";
                 break;
               case "key":
-                ctx.fillStyle = "}#ecececff";
+                ctx.fillStyle = "#ecececff";
                 break;
             }
             break;

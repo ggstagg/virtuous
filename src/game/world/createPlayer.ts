@@ -7,6 +7,7 @@ export function createDefaultPlayer(): Player {
 
   return {
     id: "test-player",
+    kind: "player",
     r: 2,
     c: 2,
 
@@ -17,6 +18,7 @@ export function createDefaultPlayer(): Player {
 
     facing: DIRECTIONS.South,
     moveSpeed: 1,
+    baseMovementDurationMs: 120,
 
     startR: 2,
     startC: 2,
@@ -33,6 +35,9 @@ export function createDefaultPlayer(): Player {
 
     isAggroed: false,
     isScared: false,
+    scaredCooldownMs: 0,
+    scaredIntervalMs: 10000,
+    attackedByEntityId: null,
     isIntimidated: false,
 
     visionRadius: 5,
@@ -41,6 +46,9 @@ export function createDefaultPlayer(): Player {
 
     virtuePoints: 0,
     vicePoints: 0,
+
+    attackCooldownMs: 0,
+    attackIntervalMs: 250,
 
     invulnerabilityMs: 0,
     maxInvulnerabilityMs: 400,

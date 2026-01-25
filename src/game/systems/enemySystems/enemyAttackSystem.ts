@@ -25,7 +25,7 @@ export function enemyAttackSystem(world: WorldState, dtMs: number) {
       if (!isFacing(enemy, entity.r, entity.c)) continue;
 
       const damage = Math.max(1, enemy.attackPower);
-      applyDamage(world, entity, damage);
+      applyDamage(world, entity, enemy, damage);
       enemy.attackCooldownMs = enemy.attackIntervalMs;
 
       pushEvent(

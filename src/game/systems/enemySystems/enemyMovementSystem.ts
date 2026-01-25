@@ -6,6 +6,7 @@ function clearPlan(enemy: Enemy) {
   enemy.currentPath = null;
   enemy.pathIndex = 0;
   enemy.nextDirection = null;
+  enemy.wanderDirection = null;
 }
 
 export function enemyMovementSystem(world: WorldState, dtMs: number) {
@@ -19,6 +20,7 @@ export function enemyMovementSystem(world: WorldState, dtMs: number) {
     }
 
     const hadDir = enemy.nextDirection !== null;
+    const wasChasing = enemy.currentPath !== null;
 
     const started = stepEntityMovement(world, enemy, dtMs, () => {
       const d = enemy.nextDirection;
@@ -26,15 +28,14 @@ export function enemyMovementSystem(world: WorldState, dtMs: number) {
       return d;
     });
 
-    if (hadDir) {
-      if (started) {
-        // move successfully started, consume exactly one path step
-        enemy.pathIndex += 1;
-        console.log("new enemy path index: ", enemy.pathIndex);
-      } else {
-        // tried to move but couldn't (blocked/out of bounds)
-        clearPlan(enemy);
-      }
+    if (!hadDir) continue;
+
+    if (started) {
+      // move successfully started, consume exactly one path step
+      if (wasChasing) enemy.pathIndex += 1;
+    } else {
+      // tried to move but couldn't (blocked/out of bounds)
+      clearPlan(enemy);
     }
   }
 }

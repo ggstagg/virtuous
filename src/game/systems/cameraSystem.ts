@@ -30,7 +30,7 @@ function getPlayerDrawPosPx(world: WorldState, tileSize: number) {
         ? 1
         : Math.min(
             1,
-            world.player.moveProgressMs / world.player.moveDurationMs
+            world.player.moveProgressMs / world.player.moveDurationMs,
           );
 
     drawR =
@@ -61,7 +61,7 @@ export function cameraSystem(
   world: WorldState,
   camera: Camera,
   dtMs: number,
-  params: CameraParams
+  params: CameraParams,
 ) {
   const { tileSize } = params;
   const { worldW, worldH } = worldPixelSize(world, tileSize);

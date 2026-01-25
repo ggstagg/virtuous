@@ -5,6 +5,7 @@ import { manhattanDistance } from "../pathfinding/manhattan";
 import { pushEvent } from "../eventLog";
 import type { EntityBase } from "../../types/EntityBase";
 import { directionFromTo } from "../../../utils/distanceUtils";
+import { pickWanderDirection } from "./pickWanderDirection";
 
 function pickClosestTarget(world: WorldState, enemy: Enemy): EntityBase | null {
   let closestEntity: { entity: EntityBase; distance: number } | null = null;
@@ -45,6 +46,21 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
     if (!targetEntity) {
       clearPlan(enemy);
       enemy.targetEntityId = null;
+
+      enemy.wanderCooldownMs = Math.max(
+        0,
+        enemy.wanderCooldownMs - enemy.thinkIntervalMs,
+      );
+      console.log(enemy.wanderCooldownMs);
+      if (enemy.wanderCooldownMs > 0) {
+        enemy.nextDirection = null;
+        continue;
+      }
+      if (Math.random() < 0.2) enemy.wanderCooldownMs = enemy.wanderIntervalMs;
+
+      const direction = pickWanderDirection(world, enemy);
+      enemy.nextDirection = direction;
+      enemy.wanderDirection = direction;
       continue;
     }
 
@@ -71,13 +87,18 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
       continue;
     }
 
-    enemy.isAggroed = true;
-    pushEvent(world, "bad", `${targetEntity.id} aggroed ${enemy.id}`);
+    if (!enemy.isAggroed)
+      pushEvent(world, "bad", `${targetEntity.id} aggroed ${enemy.id}`);
 
+    enemy.isAggroed = true;
     const goalChanged =
       enemy.pathGoalR !== targetEntity.r || enemy.pathGoalC !== targetEntity.c;
     if (goalChanged) {
-      clearPlan(enemy);
+      enemy.currentPath = null;
+      enemy.pathIndex = 0;
+      enemy.nextDirection = null;
+      enemy.pathGoalR = null;
+      enemy.pathGoalC = null;
     }
 
     // if no plan or plan exhausted, compute a new path
@@ -96,9 +117,26 @@ export function enemyAISystem(world: WorldState, dtMs: number) {
         maxDepth: enemy.visionRadius,
         maxNodes: 500,
       });
+      console.log("new path: ", newPath);
 
       if (!newPath || newPath.length < 2) {
-        clearPlan(enemy);
+        enemy.targetEntityId = null;
+
+        enemy.wanderCooldownMs = Math.max(
+          0,
+          enemy.wanderCooldownMs - enemy.thinkIntervalMs,
+        );
+        console.log(enemy.wanderCooldownMs);
+        if (enemy.wanderCooldownMs > 0) {
+          enemy.nextDirection = null;
+          continue;
+        }
+        if (Math.random() < 0.2)
+          enemy.wanderCooldownMs = enemy.wanderIntervalMs;
+
+        const direction = pickWanderDirection(world, enemy);
+        enemy.nextDirection = direction;
+        enemy.wanderDirection = direction;
         continue;
       }
 

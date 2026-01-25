@@ -1,9 +1,16 @@
 import type { Direction } from "./Direction";
+import type { Enemy } from "./Enemy";
 import type { Item } from "./Item";
+import type { Neutral } from "./Neutral";
+import type { Player } from "./Player";
 import type { StatusEffect } from "./StatusEffect";
+
+export type EntityKind = "player" | "enemy" | "neutral";
 
 export interface EntityBase {
   id: string;
+  kind: EntityKind;
+
   r: number;
   c: number;
 
@@ -13,7 +20,10 @@ export interface EntityBase {
   defensePower: number;
 
   facing: Direction;
+
   moveSpeed: number;
+  baseMovementDurationMs: number;
+
   targetR: number | null;
   targetC: number | null;
   startR: number;
@@ -29,6 +39,9 @@ export interface EntityBase {
 
   isAggroed: boolean;
   isScared: boolean;
+  scaredCooldownMs: number;
+  scaredIntervalMs: number;
+  attackedByEntityId: string | null;
   isIntimidated: boolean;
 
   visionRadius: number;
@@ -37,3 +50,5 @@ export interface EntityBase {
   invulnerabilityMs: number;
   maxInvulnerabilityMs: number;
 }
+
+export type Entity = Player | Enemy | Neutral;

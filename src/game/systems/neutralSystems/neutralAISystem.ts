@@ -9,6 +9,29 @@ import type { WorldState } from "../../types/WorldState";
 import { inBounds } from "../movementHelpers";
 import { manhattanDistance } from "../pathfinding/manhattan";
 
+type Threat = { r: number; c: number; id: string };
+
+function getThreatForNeutral(
+  world: WorldState,
+  neutral: Neutral,
+): Threat | null {
+  if (
+    neutral.scaredCooldownMs > 0 &&
+    neutral.attackedByEntityId === world.player.id
+  ) {
+    return { r: world.player.r, c: world.player.c, id: world.player.id };
+  }
+  const nearestEnemy = pickNearestEnemy(world, neutral);
+  if (!nearestEnemy) return null;
+  if (nearestEnemy.distance > neutral.visionRadius) return null;
+
+  return {
+    r: nearestEnemy.enemy.r,
+    c: nearestEnemy.enemy.c,
+    id: nearestEnemy.enemy.id,
+  };
+}
+
 function pickNearestEnemy(
   world: WorldState,
   neutral: Neutral,
@@ -34,13 +57,14 @@ function pickNearestEnemy(
 function pickFleeDirection(
   world: WorldState,
   neutral: Neutral,
-  enemy: Enemy,
+  threatR: number,
+  threatC: number,
 ): Direction | null {
   let bestScore = -Infinity;
   const bestDirs: Direction[] = [];
 
-  const relativeR = neutral.r - enemy.r;
-  const relativeC = neutral.c - enemy.c;
+  const relativeR = neutral.r - threatR;
+  const relativeC = neutral.c - threatC;
 
   for (const direction of Object.values(DIRECTIONS)) {
     const { dr, dc } = DirectionDelta[direction];
@@ -52,7 +76,7 @@ function pickFleeDirection(
     const tile = world.grid[nextR][nextC];
     if (!tile.isWalkable || tile.entityId) continue;
 
-    const distance = manhattanDistance(nextR, nextC, enemy.r, enemy.c);
+    const distance = manhattanDistance(nextR, nextC, threatR, threatC);
 
     const away = dr * relativeR + dc * relativeC;
 
@@ -89,16 +113,21 @@ export function neutralAISystem(world: WorldState, dtMs: number) {
   for (const neutral of Object.values(world.neutrals)) {
     if (neutral.hp <= 0) continue;
 
+    neutral.scaredCooldownMs = Math.max(0, neutral.scaredCooldownMs - dtMs);
+    if (neutral.scaredCooldownMs === 0) neutral.attackedByEntityId = null;
+
     neutral.thinkCooldownMs -= dtMs;
     if (neutral.thinkCooldownMs > 0) continue;
     if (neutral.targetR !== null && neutral.targetC !== null) continue;
 
     neutral.thinkCooldownMs = neutral.thinkIntervalMs;
 
-    const nearestEnemy = pickNearestEnemy(world, neutral);
+    const threat = getThreatForNeutral(world, neutral);
 
-    if (!nearestEnemy || nearestEnemy.distance > neutral.visionRadius) {
-      if (Math.random() < 0.5) {
+    if (!threat) {
+      neutral.isScared = false;
+
+      if (Math.random() < 0.7) {
         neutral.nextDirection = null;
         continue;
       }
@@ -107,16 +136,20 @@ export function neutralAISystem(world: WorldState, dtMs: number) {
         Object.values(DIRECTIONS)[
           (Math.random() * Object.values(DIRECTIONS).length) | 0
         ];
-      neutral.isScared = false;
       neutral.nextDirection = direction;
       continue;
     }
 
-    neutral.isScared = true;
+    const distanceToThreat = manhattanDistance(
+      neutral.r,
+      neutral.c,
+      threat.r,
+      threat.c,
+    );
+    neutral.isScared =
+      distanceToThreat <= neutral.visionRadius || neutral.scaredCooldownMs > 0;
 
-    console.log("entering flee direction");
-    const fleeDirection = pickFleeDirection(world, neutral, nearestEnemy.enemy);
-    console.log(`${neutral.id} chose to flee towards the ${fleeDirection}`);
+    const fleeDirection = pickFleeDirection(world, neutral, threat.r, threat.c);
     neutral.nextDirection = fleeDirection;
   }
 }

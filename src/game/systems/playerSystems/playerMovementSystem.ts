@@ -1,7 +1,7 @@
-import type { WorldState } from "../types/WorldState";
-import type { InputState } from "./inputSystem";
-import type { Direction } from "../types/Direction";
-import { stepEntityMovement } from "./movementHelpers";
+import type { WorldState } from "../../types/WorldState";
+import type { InputState } from "../inputSystem";
+import type { Direction } from "../../types/Direction";
+import { stepEntityMovement } from "../movementHelpers";
 
 function pickDirection(input: InputState): Direction | null {
   if (input.heldDirections.size === 0) return null;
@@ -13,7 +13,7 @@ function pickDirection(input: InputState): Direction | null {
 export function playerMovementSystem(
   world: WorldState,
   input: InputState,
-  dtMs: number
+  dtMs: number,
 ) {
   stepEntityMovement(world, world.player, dtMs, () => pickDirection(input));
 }

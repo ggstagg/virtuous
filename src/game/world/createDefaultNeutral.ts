@@ -1,3 +1,4 @@
+import { ONE_SECOND } from "../constants/timeConstants";
 import { DIRECTIONS, type Direction } from "../types/Direction";
 import type { Neutral, NeutralEntityType } from "../types/Neutral";
 import type { SocialGroup } from "../types/SocialGroup";
@@ -14,15 +15,17 @@ export function createDefaultNeutral(
 
   return {
     id,
+    kind: "neutral",
     r,
     c,
-    hp: 10,
-    maxHp: 10,
+    hp: 20,
+    maxHp: 20,
     attackPower: 0,
     defensePower: 0,
 
     facing: DIRECTIONS.South as Direction,
-    moveSpeed: 0.6,
+    moveSpeed: 1,
+    baseMovementDurationMs: 250,
     targetR: null,
     targetC: null,
 
@@ -39,6 +42,9 @@ export function createDefaultNeutral(
 
     isAggroed: false,
     isScared: false,
+    scaredCooldownMs: 0,
+    scaredIntervalMs: 10 * ONE_SECOND,
+    attackedByEntityId: null,
     isIntimidated: false,
 
     visionRadius: 4,
@@ -53,7 +59,7 @@ export function createDefaultNeutral(
 
     neutralEntityType: neutralType,
 
-    thinkCooldownMs: 0,
+    thinkCooldownMs: 200,
     thinkIntervalMs: 200,
     nextDirection: null,
   };
