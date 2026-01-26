@@ -1,3 +1,4 @@
+import { DIRECTIONS, type Direction } from "../types/Direction";
 import type { EntityBase } from "../types/EntityBase";
 import type { WorldState } from "../types/WorldState";
 import { pushEvent } from "./eventLog";
@@ -28,4 +29,22 @@ export function applyDamage(
     pushEvent(world, "bad", `${target.id} died`);
   }
   target.invulnerabilityMs = target.maxInvulnerabilityMs;
+  pushAttackVfx(world, source.r, source.c, source.facing ?? DIRECTIONS.North);
+}
+
+export function pushAttackVfx(
+  world: WorldState,
+  r: number,
+  c: number,
+  direction: Direction,
+  ttlMs: number = 140,
+) {
+  world.attackVfx.push({
+    id: `${Date.now()}-vfx`,
+    r,
+    c,
+    direction,
+    ageMs: 0,
+    ttlMs,
+  });
 }

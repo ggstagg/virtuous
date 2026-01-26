@@ -1,5 +1,6 @@
 import type { WorldState } from "../types/WorldState";
 import { animationSystem } from "./animationSystem";
+import { attackVfxSystem } from "./attackVfsSystem";
 import { deathSystem } from "./deathSystem";
 import { enemyAISystem } from "./enemySystems/enemyAISystem";
 import { enemyAttackSystem } from "./enemySystems/enemyAttackSystem";
@@ -25,6 +26,7 @@ export function stepWorld(world: WorldState, input: InputState, dtMs: number) {
   enemyMovementSystem(world, dtMs);
   neutralMovementSystem(world, dtMs);
   animationSystem(world, dtMs);
+  attackVfxSystem(world, dtMs);
 
   enemyAttackSystem(world, dtMs);
   deathSystem(world);

@@ -1,3 +1,4 @@
+import type { AttackVfx } from "./AttackVfx";
 import type { Enemy } from "./Enemy";
 import type { GameEvent } from "./GameEvent";
 import type { Grid } from "./Grid";
@@ -11,6 +12,8 @@ export interface WorldState {
 
   enemies: Record<string, Enemy>;
   neutrals: Record<string, Neutral>;
+
+  attackVfx: AttackVfx[];
 
   tick: number;
   seed: number;

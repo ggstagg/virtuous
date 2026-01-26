@@ -43,6 +43,8 @@ export function createInitialWorldState(): WorldState {
     enemies: {},
     neutrals: {},
 
+    attackVfx: [],
+
     tick: 0,
     seed,
     uiVersion: 0,

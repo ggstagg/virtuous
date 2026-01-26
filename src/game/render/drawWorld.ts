@@ -8,6 +8,7 @@ import type { SpriteSheets } from "./sprites/spriteSheet";
 import { drawEntities } from "./drawHelpers/drawEntities";
 import { TILE_SIZE } from "../constants/viewConstants";
 import { drawEnvironment } from "./drawHelpers/drawEnvironment";
+import { drawAttackVfx } from "./drawHelpers/drawAttackVfx";
 
 export function drawWorld(
   ctx: CanvasRenderingContext2D,
@@ -34,6 +35,7 @@ export function drawWorld(
   } else {
     drawEnvironment(ctx, world, sprites);
     drawEntities(ctx, world, sprites);
+    drawAttackVfx(ctx, world);
   }
 
   ctx.restore();
