@@ -25,6 +25,7 @@ export function fromSaveState(saveState: SaveState): WorldState {
     player: saveState.player,
     enemies,
     neutrals: saveState.neutrals,
+    attackVfx: [],
     tick: saveState.tick,
     seed: saveState.seed,
     uiVersion: 0,
