@@ -1,3 +1,5 @@
+import { TILE_SIZE } from "../../constants/viewConstants";
+
 export function drawGameOver(
   ctx: CanvasRenderingContext2D,
   viewW: number,
@@ -6,16 +8,16 @@ export function drawGameOver(
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = "rgba(0,0,0,0.65)";
-  ctx.fillRect(0, 0, viewW, viewH);
+  ctx.fillRect(0, 0, viewW * TILE_SIZE, viewH * TILE_SIZE);
 
   ctx.fillStyle = "white";
-  ctx.font = "bold 36px sans-serif";
+  ctx.font = "bold 48px sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("GAME OVER", viewW / 2, viewH / 2 - 20);
+  ctx.fillText("GAME OVER", 200, 200);
 
-  ctx.font = "16px sans-serif";
-  ctx.fillText("Press R to restart", viewW / 2, viewH / 2 + 20);
+  ctx.font = "24px sans-serif";
+  ctx.fillText("Press R to restart", 200, 260);
 
   ctx.restore();
 }

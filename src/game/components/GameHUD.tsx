@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { GameEvent } from "../types/GameEvent";
+import { SpriteSlicePanel } from "./SpriteSlicePanel";
+import GuiUrl from "../assets/gui/GUI0.png";
 
 type HudSnapshot = {
   hp: number;
@@ -80,63 +82,98 @@ export function GameHUD({
 
   const hpPct = snap.maxHp <= 0 ? 0 : clamp(snap.hp / snap.maxHp, 0, 1);
 
-  const hpH = clamp(Math.round(viewH * 0.18), 90, 170);
-  const statusH = clamp(Math.round(viewH * 0.24), 120, 240);
-
   return (
-    <div className="flex flex-col" style={{ width: sidebarW, gap: 12 }}>
-      <div className="rounded-lg bg-blue-600 p-3" style={{ height: hpH }}>
-        <div className="text-white font-semibold mb-2">Player</div>
-
-        <div className="text-white text-sm mb-1">
-          HP: {snap.hp} / {snap.maxHp}
-        </div>
-
-        <div className="h-3 rounded bg-red-950/40 overflow-hidden">
-          <div
-            className="h-full bg-red-500"
-            style={{ width: `${Math.round(hpPct * 100)}%` }}
-          />
-        </div>
-
-        {snap.gameOver && (
-          <div className="mt-2 text-white/90 text-sm font-semibold">
-            GAME OVER
-          </div>
-        )}
-      </div>
-
-      <div className="rounded-lg bg-zinc-800 p-3 flex-1 min-h-0">
-        <div className="text-white font-semibold mb-2">Inventory</div>
-        <div className="text-white text-sm">Gold: {snap.gold}</div>
-        <div className="text-white text-sm">Food: {snap.food}</div>
-      </div>
-
-      <div
-        className="rounded-lg bg-indigo-900/40 p-3 flex flex-col overflow-hidden"
-        style={{ height: statusH }}
+    <div
+      className="flex flex-col"
+      style={{ width: sidebarW, height: viewH, gap: 12 }}
+    >
+      {/* HP */}
+      <SpriteSlicePanel
+        src={GuiUrl}
+        cellSize={16}
+        col={13}
+        row={13}
+        wCells={3}
+        hCells={3}
+        borderCells={1}
+        scale={2}
+        className="text-white"
       >
-        <div className="text-indigo-200 font-semibold mb-2">Event Log</div>
+        <div className="py-3">
+          <div className="font-semibold mb-2">Player</div>
 
-        {/* scroll area */}
-        <div className="flex-1 min-h-0 overflow-auto pr-1">
-          <div className="flex flex-col gap-1">
-            {snap.events.map((e) => (
-              <div
-                key={e.id}
-                className={[
-                  "text-xs leading-snug break-words",
-                  e.type === "bad" ? "text-red-200" : "",
-                  e.type === "good" ? "text-emerald-200" : "",
-                  e.type === "info" ? "text-indigo-200/80" : "",
-                ].join(" ")}
-              >
-                {e.text}
-              </div>
-            ))}
+          <div className="text-sm mb-1">
+            HP: {snap.hp} / {snap.maxHp}
+          </div>
+
+          <div className="h-3 rounded bg-red-950/40 overflow-hidden">
+            <div
+              className="h-full bg-red-500"
+              style={{ width: `${Math.round(hpPct * 100)}%` }}
+            />
+          </div>
+
+          {snap.gameOver && (
+            <div className="mt-2 text-white/90 text-sm font-semibold">
+              GAME OVER
+            </div>
+          )}
+        </div>
+      </SpriteSlicePanel>
+
+      {/* Inventory */}
+      <SpriteSlicePanel
+        src={GuiUrl}
+        cellSize={16}
+        col={13}
+        row={13}
+        wCells={3}
+        hCells={3}
+        borderCells={1}
+        scale={2}
+        className="text-white flex-1 min-h-44"
+      >
+        <div className="py-3 h-full">
+          <div className="font-semibold mb-2">Inventory</div>
+          <div className="text-sm">Gold: {snap.gold}</div>
+          <div className="text-sm">Food: {snap.food}</div>
+        </div>
+      </SpriteSlicePanel>
+
+      {/* Status / Event Log */}
+      <SpriteSlicePanel
+        src={GuiUrl}
+        cellSize={16}
+        col={13}
+        row={13}
+        wCells={3}
+        hCells={3}
+        borderCells={1}
+        scale={2}
+        className="text-white flex flex-col overflow-auto max-h-50"
+      >
+        <div className="py-3 flex flex-col h-full">
+          <div className="text-indigo-200 font-semibold mb-2">Event Log</div>
+
+          <div className="flex-1 min-h-30 overflow-auto pr-1">
+            <div className="flex flex-col gap-1">
+              {snap.events.map((e) => (
+                <div
+                  key={e.id}
+                  className={[
+                    "text-xs leading-snug break-words",
+                    e.type === "bad" ? "text-red-200" : "",
+                    e.type === "good" ? "text-emerald-200" : "",
+                    e.type === "info" ? "text-indigo-200/80" : "",
+                  ].join(" ")}
+                >
+                  {e.text}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      </SpriteSlicePanel>
     </div>
   );
 }

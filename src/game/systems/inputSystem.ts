@@ -26,6 +26,7 @@ export function consumeAttack(input: InputState): boolean {
 
 export function attachKeyboard(input: InputState): () => void {
   const onKeyDown = (e: KeyboardEvent) => {
+    if (e.ctrlKey || e.metaKey) return; 
     if (e.code === "Space" || e.key.startsWith("Arrow")) e.preventDefault();
 
     switch (e.code) {
@@ -50,7 +51,7 @@ export function attachKeyboard(input: InputState): () => void {
       case "KeyF":
         input.attackPressed = true;
         break;
-        
+
       default:
         if (!e.repeat) input.functionKeys.add(e.key);
         break;

@@ -14,9 +14,9 @@ const StartMenu = ({ canContinue, onStart, onContinue }: StartMenuProps) => {
           <div>Attack: Spacebar / F</div>
           <div>Zoom: V</div>
           <div>Reset: R</div>
-          <div>Save: Ctrl/Command + S</div>
-          <div>Load: Ctrl/Command + L</div>
-          <div>Debug: Ctrl/Command + D</div>
+          <div>Save: Control + S</div>
+          <div>Load: Control + L</div>
+          <div>Debug: Control + D</div>
         </div>
 
         <div className="mt-6 flex flex-col gap-3">
