@@ -12,6 +12,7 @@ const StartMenu = ({ canContinue, onStart, onContinue }: StartMenuProps) => {
         <div className="mt-1 text-sm text-slate-300">
           <div>Move: WASD / Arrow Keys</div>
           <div>Attack: Spacebar / F</div>
+          <div>Heal: H</div>
           <div>Zoom: V</div>
           <div>Reset: R</div>
           <div>Save: Control + S</div>

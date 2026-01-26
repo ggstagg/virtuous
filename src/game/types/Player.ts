@@ -4,6 +4,8 @@ export interface Player extends EntityBase {
   virtuePoints: number;
   vicePoints: number;
 
-  attackCooldownMs: number;
-  attackIntervalMs: number;
+  actionCooldownMs: number;
+  actionIntervalMs: number;
 }
+
+export type PlayerActions = "attack" | "heal" | null;

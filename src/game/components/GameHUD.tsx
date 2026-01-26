@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { WorldState } from "../types/WorldState";
 import type { GameEvent } from "../types/GameEvent";
 import { SpriteSlicePanel } from "./SpriteSlicePanel";
@@ -82,6 +82,15 @@ export function GameHUD({
 
   const hpPct = snap.maxHp <= 0 ? 0 : clamp(snap.hp / snap.maxHp, 0, 1);
 
+  const logRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const el = logRef.current;
+    if (!el) return;
+
+    // scroll to bottom
+    el.scrollTop = el.scrollHeight;
+  }, [snap.events.length]);
+
   return (
     <div
       className="flex flex-col"
@@ -150,12 +159,12 @@ export function GameHUD({
         hCells={3}
         borderCells={1}
         scale={2}
-        className="text-white flex flex-col overflow-auto max-h-50"
+        className="text-white flex flex-col max-h-50"
       >
         <div className="py-3 flex flex-col h-full">
-          <div className="text-indigo-200 font-semibold mb-2">Event Log</div>
+          <div className="text-indigo-200 font-semibold">Event Log</div>
 
-          <div className="flex-1 min-h-30 overflow-auto pr-1">
+          <div ref={logRef} className="flex-1 min-h-30 overflow-auto pr-1">
             <div className="flex flex-col gap-1">
               {snap.events.map((e) => (
                 <div

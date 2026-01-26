@@ -9,13 +9,13 @@ import type { InputState } from "./inputSystem";
 import { itemPickupSystem } from "./itemSystems/itemPickupSystem";
 import { neutralAISystem } from "./neutralSystems/neutralAISystem";
 import { neutralMovementSystem } from "./neutralSystems/neutralMovementSystem";
-import { playerAttackSystem } from "./playerSystems/playerAttackSystem";
+import { playerActionSystem } from "./playerSystems/playerActionSystem";
 import { playerMovementSystem } from "./playerSystems/playerMovementSystem";
 
 export function stepWorld(world: WorldState, input: InputState, dtMs: number) {
   if (world.gameOver) return;
 
-  playerAttackSystem(world, input, dtMs);
+  playerActionSystem(world, input, dtMs);
   playerMovementSystem(world, input, dtMs);
   itemPickupSystem(world);
 

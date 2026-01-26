@@ -1,16 +1,17 @@
 import { DIRECTIONS, type Direction } from "../types/Direction";
+import type { PlayerActions } from "../types/Player";
 
 export interface InputState {
   heldDirections: Set<Direction>;
   functionKeys: Set<string>;
-  attackPressed: boolean;
+  actionPressed: PlayerActions;
 }
 
 export function createInputState(): InputState {
   return {
     heldDirections: new Set(),
     functionKeys: new Set(),
-    attackPressed: false,
+    actionPressed: null,
   };
 }
 
@@ -18,15 +19,15 @@ export function clearPressed(input: InputState) {
   input.functionKeys.clear();
 }
 
-export function consumeAttack(input: InputState): boolean {
-  if (!input.attackPressed) return false;
-  input.attackPressed = false;
-  return true;
+export function consumeAction(input: InputState): PlayerActions {
+  const action = input.actionPressed;
+  input.actionPressed = null;
+  return action;
 }
 
 export function attachKeyboard(input: InputState): () => void {
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey) return; 
+    if (e.ctrlKey || e.metaKey) return;
     if (e.code === "Space" || e.key.startsWith("Arrow")) e.preventDefault();
 
     switch (e.code) {
@@ -49,7 +50,11 @@ export function attachKeyboard(input: InputState): () => void {
 
       case "Space":
       case "KeyF":
-        input.attackPressed = true;
+        input.actionPressed = "attack";
+        break;
+
+      case "KeyH":
+        input.actionPressed = "heal";
         break;
 
       default:

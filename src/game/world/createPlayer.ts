@@ -49,8 +49,8 @@ export function createDefaultPlayer(): Player {
     virtuePoints: 0,
     vicePoints: 0,
 
-    attackCooldownMs: 0,
-    attackIntervalMs: 250,
+    actionCooldownMs: 0,
+    actionIntervalMs: 250,
 
     invulnerabilityMs: 0,
     maxInvulnerabilityMs: 400,
