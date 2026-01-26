@@ -1,73 +1,67 @@
-# React + TypeScript + Vite
+# Virtuous
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Virtuous is a custom-built 2D tile-based game engine focused on deterministic simulation, AI behaviors, and data-driven rendering.
+It was implemented from scratch using React, TypeScript, Tailwind, and Vite.
 
-Currently, two official plugins are available:
+While Virtuous currently presents as a small roguelike-style game, the core goal is to explore engine architecture, simulation, and extensible systems design, rather than content-heavy gameplay.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Inspiration for style and theme were drawn primarily from classic games like Gauntlet (a favorite from my early childhood) and The Legend of Zelda (NES).  
+I am a big fan of emergent gameplay (some great examples being Minecraft, Metal Gear Solid V, and Baldur's Gate 3) and always appreciate when game developers go the extra mile to give the world life. As Virtuous continues to develop, I aim to add more and more systems and rules that allow the player to draw out emergent moments.
 
-## React Compiler
+## High-Level Idea
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This project is an experiment in building a lightweight, deterministic game engine suitable for
 
-## Expanding the ESLint configuration
+- Grid-based games
+- AI behavior experimentation
+- Camera and rendering systems
+- Separation of simulation and rendering
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+The engine runs a fixed-timestep simulation and renders independently, enabling consistent AI behavior and predictable world updates.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## World
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+The player is placed in a world that is full of sin - pride, greed, lust, etc. There are also neutral characters that the player may interact with. It is up to the player to decide whether they will rid the world of evil, or if they will become more corrupt than the world itself.  
+The world is 2D, top down, similar to older Zelda games. Each of the enemy types will have specific attributes that correlate to the deadly sin that they represent. Depending on the player’s actions, they will either become more virtuous or more sinful.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Current State
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Virtuous is currently in an MVP state. While the full vision has not yet been realized, there is/are:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- a fully playable loop
+- stable simulation
+- multiple AI behaviors interacting correctly
+- quality-of-life features, such as save/load and zooming.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Ideas for Next Sprint
+
+### Engine / Systems
+
+- Zones; zone different parts of the world to be the preferred place for different entities
+- Doors and chests; unlockable doors and chests that the player can open using keys
+
+### AI
+
+- More enemy types that correspond more to the core design of Virtuous
+- More neutral types for more interesting interactions between NPCs
+
+### Rendering
+
+- Tile-based environmental animations (e.g. torches / water)
+- More world sections that are stitched together smoothly
+
+## Sources
+
+- Assets: DawnLike - DawnBringer / DragonDePlatino
+- Fonts: Google Fonts / CodeMan38
+- Config for GitHub Actions: Medium / Mike Tickle
+
+## Screenshots
+
+### Gameplay
+
+![Gameplay screenshot](assets/screenshots/gameplay.png)
+
+### Debug Render Mode
+
+![Debug render mode screenshot] (asssets/screenshots/debug-mode.png)
