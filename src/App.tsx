@@ -213,7 +213,7 @@ function App() {
     <div
       className="w-screen min-h-dvh overflow-hidden font-press-start"
       style={{
-        backgroundImage: BackgroundUrl,
+        backgroundImage: `url(${BackgroundUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
