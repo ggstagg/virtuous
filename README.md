@@ -59,9 +59,9 @@ Virtuous is currently in an MVP state. While the full vision has not yet been re
 ## Screenshots
 
 ### Gameplay
-
-![Gameplay screenshot](assets/screenshots/gameplay.png)
+<img width="2496" height="1321" alt="debug-mode" src="https://github.com/user-attachments/assets/3f72a032-f51b-4ffd-b14c-a7e2f8c0f3d6" />
 
 ### Debug Render Mode
 
-![Debug render mode screenshot] (asssets/screenshots/debug-mode.png)
+<img width="2496" height="1321" alt="gameplay" src="https://github.com/user-attachments/assets/ab94cc70-2403-40e9-9119-a3c00886bc4d" />
+
