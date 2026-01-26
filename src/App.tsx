@@ -29,6 +29,7 @@ import {
   loadSpriteSheets,
   type SpriteSheets,
 } from "./game/render/sprites/spriteSheet";
+import BackgroundUrl from "./game/assets/dungeon-background-4.png";
 
 const SIM_TICK_MS = 10;
 
@@ -212,7 +213,7 @@ function App() {
     <div
       className="w-screen min-h-dvh overflow-hidden font-press-start"
       style={{
-        backgroundImage: `url(/dungeon-background-4.png)`,
+        backgroundImage: BackgroundUrl,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
